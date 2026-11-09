@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>METO — เตรียมคุย IP กับ สวนพ.</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#0a0e1a;--surface:#111827;--surface2:#1a2236;--surface3:#222d44;
+--glass:rgba(30,41,72,0.55);--glass-border:rgba(100,130,255,0.12);
+--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+--accent:#818cf8;--accent2:#6366f1;--accent-glow:rgba(129,140,248,0.25);
+--green:#34d399;--green-glow:rgba(52,211,153,0.2);
+--orange:#fb923c;--pink:#f472b6;--red:#f87171;--cyan:#22d3ee;--yellow:#fbbf24;
+--radius:16px;--radius-sm:10px;--radius-xs:6px;
+}
+html{scroll-behavior:smooth;font-size:15px}
+body{font-family:'Noto Sans Thai','Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{position:fixed;top:0;left:0;width:260px;height:100vh;background:var(--surface);border-right:1px solid var(--glass-border);padding:24px 0;overflow-y:auto;z-index:100;display:flex;flex-direction:column}
+.sidebar-logo{padding:0 20px 20px;border-bottom:1px solid var(--glass-border);margin-bottom:12px}
+.sidebar-logo h2{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sidebar-logo p{font-size:.7rem;color:var(--text3);margin-top:2px;letter-spacing:0.5px}
+.nav-group{padding:6px 12px}
+.nav-group-title{font-size:.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;padding:8px 12px 4px;font-weight:700}
+.nav-link{display:flex;align-items:center;gap:10px;padding:9px 14px;color:var(--text2);text-decoration:none;font-size:.82rem;border-radius:var(--radius-sm);transition:all .2s;font-weight:500;margin:1px 0}
+.nav-link:hover{background:var(--glass);color:var(--text)}
+.nav-link.active{background:var(--accent-glow);color:var(--accent);font-weight:600}
+.nav-link .material-icons-round{font-size:18px;opacity:.7}
+.nav-link.active .material-icons-round{opacity:1}
+
+/* Main */
+main{margin-left:260px;flex:1;padding:32px 40px 80px;max-width:960px}
+
+/* Sections */
+.section{margin-bottom:56px;animation:fadeUp .5s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--glass-border)}
+.section-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.section-header h2{font-size:1.35rem;font-weight:700}
+.section-header .badge{font-size:.6rem;padding:3px 10px;border-radius:20px;font-weight:600;letter-spacing:.5px;margin-left:auto;text-transform:uppercase}
+
+/* Cards */
+.card{background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius);padding:20px 24px;margin-bottom:16px;backdrop-filter:blur(12px);transition:border-color .3s}
+.card:hover{border-color:rgba(100,130,255,0.25)}
+.card h3{font-size:1rem;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.card h4{font-size:.88rem;font-weight:600;margin:14px 0 8px;color:var(--accent)}
+.card p,.card li{font-size:.85rem;color:var(--text2);line-height:1.8}
+.card ul,.card ol{padding-left:20px}
+.card li{margin-bottom:4px}
+
+/* Stats Row */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:16px;text-align:center;backdrop-filter:blur(12px)}
+.stat .val{font-size:1.5rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat .label{font-size:.7rem;color:var(--text3);margin-top:4px;font-weight:500}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:12px 0;border-radius:var(--radius-sm)}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+thead{background:var(--surface3)}
+th{padding:10px 14px;text-align:left;font-weight:600;color:var(--text);white-space:nowrap;border-bottom:2px solid var(--glass-border)}
+td{padding:9px 14px;border-bottom:1px solid var(--glass-border);color:var(--text2)}
+tr:hover td{background:rgba(129,140,248,0.04)}
+
+/* Diagram */
+.diagram{background:var(--surface2);border:1px solid var(--glass-border);border-radius:var(--radius);padding:28px;margin:16px 0;overflow-x:auto}
+.diagram-title{font-size:.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;font-weight:600}
+.arch-flow{display:flex;flex-direction:column;gap:16px;align-items:center}
+.arch-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center}
+.arch-box{padding:12px 18px;border-radius:var(--radius-sm);font-size:.78rem;font-weight:600;text-align:center;min-width:120px;border:1px solid;position:relative}
+.arch-box.web{background:rgba(99,102,241,0.15);border-color:rgba(99,102,241,0.3);color:#a5b4fc}
+.arch-box.server{background:rgba(52,211,153,0.12);border-color:rgba(52,211,153,0.25);color:#6ee7b7}
+.arch-box.robot{background:rgba(251,146,60,0.12);border-color:rgba(251,146,60,0.25);color:#fdba74}
+.arch-box.ai{background:rgba(244,114,182,0.12);border-color:rgba(244,114,182,0.25);color:#f9a8d4}
+.arch-box.cam{background:rgba(34,211,238,0.12);border-color:rgba(34,211,238,0.25);color:#67e8f9}
+.arch-arrow{color:var(--text3);font-size:.75rem;font-weight:500;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.arch-arrow .material-icons-round{font-size:16px}
+
+/* Layer Diagram */
+.layers{display:flex;flex-direction:column;gap:0;max-width:480px;margin:16px auto}
+.layer{display:flex;align-items:stretch;border:1px solid var(--glass-border);transition:transform .2s}
+.layer:hover{transform:scale(1.02);z-index:1}
+.layer-num{width:50px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;flex-shrink:0}
+.layer-content{flex:1;padding:12px 16px}
+.layer-content h4{font-size:.82rem;font-weight:700;margin-bottom:2px}
+.layer-content p{font-size:.72rem;color:var(--text2);line-height:1.5}
+.layer-content .h{font-size:.65rem;color:var(--text3)}
+.l5{background:rgba(244,114,182,0.08);border-color:rgba(244,114,182,0.2)}.l5 .layer-num{color:var(--pink)}
+.l4{background:rgba(251,146,60,0.08);border-color:rgba(251,146,60,0.2)}.l4 .layer-num{color:var(--orange)}
+.l3{background:rgba(129,140,248,0.08);border-color:rgba(129,140,248,0.2)}.l3 .layer-num{color:var(--accent)}
+.l2{background:rgba(34,211,238,0.08);border-color:rgba(34,211,238,0.2)}.l2 .layer-num{color:var(--cyan)}
+.l1{background:rgba(52,211,153,0.08);border-color:rgba(52,211,153,0.2)}.l1 .layer-num{color:var(--green)}
+
+/* Tags */
+.tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.65rem;font-weight:600;margin:2px}
+.tag-accent{background:var(--accent-glow);color:var(--accent)}
+.tag-green{background:var(--green-glow);color:var(--green)}
+.tag-orange{background:rgba(251,146,60,0.15);color:var(--orange)}
+.tag-pink{background:rgba(244,114,182,0.15);color:var(--pink)}
+.tag-cyan{background:rgba(34,211,238,0.15);color:var(--cyan)}
+
+/* Highlight box */
+.highlight{background:linear-gradient(135deg,rgba(129,140,248,0.1),rgba(34,211,238,0.08));border:1px solid rgba(129,140,248,0.2);border-radius:var(--radius-sm);padding:14px 18px;margin:12px 0;font-size:.82rem}
+.highlight.warn{background:linear-gradient(135deg,rgba(251,146,60,0.1),rgba(248,113,113,0.08));border-color:rgba(251,146,60,0.25)}
+.highlight.success{background:linear-gradient(135deg,rgba(52,211,153,0.1),rgba(34,211,238,0.08));border-color:rgba(52,211,153,0.25)}
+
+/* Collapsible */
+.collapsible{cursor:pointer;user-select:none}
+.collapsible::after{content:'expand_more';font-family:'Material Icons Round';float:right;font-size:20px;transition:transform .3s;color:var(--text3)}
+.collapsible.open::after{transform:rotate(180deg)}
+.collapse-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.collapse-body.open{max-height:5000px}
+
+/* Responsive */
+@media(max-width:768px){
+.sidebar{display:none}
+main{margin-left:0;padding:20px 16px 60px}
+.stats{grid-template-columns:repeat(2,1fr)}
+.arch-row{flex-direction:column}
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+</style>
+</head>
+<body>
+
+<!-- Sidebar Navigation -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <h2>🤖 METO IP Prep</h2>
+    <p>เตรียมคุย IP กับ สวนพ.</p>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-title">ข้อมูลโปรเจกต์</div>
+    <a href="#overview" class="nav-link active"><span class="material-icons-round">home</span>ภาพรวม METO</a>
+    <a href="#architecture" class="nav-link"><span class="material-icons-round">account_tree</span>สถาปัตยกรรมระบบ</a>
+    <a href="#hardware" class="nav-link"><span class="material-icons-round">memory</span>ฮาร์ดแวร์ 5 ชั้น</a>
+    <a href="#software" class="nav-link"><span class="material-icons-round">code</span>ซอฟต์แวร์</a>
+    <a href="#logic" class="nav-link"><span class="material-icons-round">psychology</span>ลอจิกที่คิดเอง</a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-title">เตรียมคุย IP</div>
+    <a href="#opensource" class="nav-link"><span class="material-icons-round">folder_open</span>Open Source ที่ใช้</a>
+    <a href="#novelty" class="nav-link"><span class="material-icons-round">stars</span>จุดเด่น & Novelty</a>
+    <a href="#ip-types" class="nav-link"><span class="material-icons-round">shield</span>ประเภท IP ที่จด</a>
+    <a href="#qa" class="nav-link"><span class="material-icons-round">quiz</span>คำถาม & คำตอบ</a>
+    <a href="#checklist" class="nav-link"><span class="material-icons-round">checklist</span>Checklist</a>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main>
+
+<!-- ==================== SECTION 1: OVERVIEW ==================== -->
+<section id="overview" class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:var(--accent-glow);color:var(--accent)">🤖</div>
+    <h2>ภาพรวม METO</h2>
+    <span class="badge" style="background:var(--accent-glow);color:var(--accent)">Overview</span>
+  </div>
+
+  <div class="card">
+    <h3>🎯 METO (เมโต้) — Media Technology Robot</h3>
+    <p><strong>ชื่อเต็ม:</strong> แพลตฟอร์มหุ่นยนต์นวัตกรรมเพื่อการศึกษาสำหรับการเขียนโค้ดแบบบล็อก</p>
+    <p><strong>EN:</strong> Innovative Educational Robotics Platform for Block Code Coding</p>
+    <p style="margin-top:8px"><strong>ระดับ:</strong> วิทยานิพนธ์ ปริญญาวิศวกรรมศาสตรมหาบัณฑิต สาขาเทคโนโลยีสื่อดิจิทัล</p>
+    <p><strong>คณะ:</strong> สถาปัตยกรรมศาสตร์และการออกแบบ มจธ. (KMUTT)</p>
+    <p><strong>ผู้วิจัย:</strong> ฐิตารีย์ ธำรงค์คูสกุล, ณัฏฐณิชา พรหมบุญ, ภาณุมาส อุดมพัฒนกุล</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="val">~2,770฿</div><div class="label">ต้นทุนต่อตัว</div></div>
+    <div class="stat"><div class="val">9</div><div class="label">อารมณ์</div></div>
+    <div class="stat"><div class="val">5 ชั้น</div><div class="label">โครงสร้างปิ่นโต</div></div>
+    <div class="stat"><div class="val">9 หมวด</div><div class="label">Block Categories</div></div>
+    <div class="stat"><div class="val">21</div><div class="label">อุปกรณ์ทั้งหมด</div></div>
+    <div class="stat"><div class="val">6</div><div class="label">เซอร์โว</div></div>
+  </div>
+
+  <div class="card">
+    <h3>🔑 3 จุดเด่นหลัก ที่ต้องจำ</h3>
+    <ol>
+      <li><strong>Emotional Interaction</strong> — หุ่นยนต์ตรวจจับอารมณ์จากใบหน้าผู้ใช้ (ESP-DL) แล้วแสดงอารมณ์ตอบกลับ 9 แบบ ผ่านหน้าจอ TFT + ท่าทาง servo → สร้างแรงจูงใจในการเรียน</li>
+      <li><strong>AI Tutor (Scaffolding)</strong> — ระบบผู้ช่วยสอนผ่าน Gemini 2.5 Pro ใช้ Socratic Method ให้คำใบ้ไม่ให้คำตอบ → ส่งเสริมการคิดแก้ปัญหาด้วยตัวเอง</li>
+      <li><strong>Modular DIY + Block Coding</strong> — หุ่นยนต์ประกอบแบบปิ่นโต 5 ชั้น ถอดเพิ่มลดชั้นได้ + เขียนโค้ดบล็อกผ่านเว็บสั่งควบคุมได้ → เข้าใจทั้ง hardware + software</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>📊 ทำไมถึงสำคัญ (ข้อมูลจากวิจัย)</h3>
+    <ul>
+      <li><strong>PISA 2022:</strong> เด็กไทยคะแนน คณิต 394, วิทย์ 409, อ่าน 379 (ต่ำกว่า OECD เฉลี่ย 472, 485, 476)</li>
+      <li><strong>74.1%</strong> ของเยาวชนไทยขาดทักษะดิจิทัลที่จำเป็น (World Bank & EEF, 2024)</li>
+      <li><strong>ขาดแคลน 70,000 คน/ปี</strong> — ผลิตได้ 30,000 vs ต้องการ 100,000 (depa, 2024)</li>
+      <li><strong>ตลาดหุ่นยนต์การศึกษา:</strong> $1.86B (2024) → $18B (2034), CAGR 27.5%</li>
+      <li>หุ่นยนต์ที่แสดงอารมณ์เพิ่มแรงจูงใจเรียน <strong>Cohen's d = 0.69-0.70</strong> (Belpaeme et al., 2018)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🎯 วัตถุประสงค์วิจัย 4 ข้อ</h3>
+    <ol>
+      <li>พัฒนาต้นแบบหุ่นยนต์การศึกษาแบบโมดูลาร์ที่รองรับ Block Coding</li>
+      <li>ศึกษาผลการเรียนรู้ด้าน Computational Thinking & Problem-Solving ผ่าน Tangible Coding</li>
+      <li>ศึกษาประสิทธิภาพ AI Tutor แบบ Scaffolding ในการสนับสนุนการแก้ปัญหาด้วยตนเอง</li>
+      <li>พัฒนาเครื่องมือเรียนรู้ที่มีต้นทุนต่ำสำหรับโรงเรียนที่มีงบจำกัด</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ==================== SECTION 2: ARCHITECTURE ==================== -->
+<section id="architecture" class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(52,211,153,0.15);color:var(--green)">⚡</div>
+    <h2>สถาปัตยกรรมระบบ</h2>
+    <span class="badge" style="background:var(--green-glow);color:var(--green)">System Architecture</span>
+  </div>
+
+  <div class="diagram">
+    <div class="diagram-title">ภาพรวมการเชื่อมต่อทั้งระบบ</div>
+    <div class="arch-flow">
+      <!-- Row 1: User Layer -->
+      <div class="arch-row">
+        <div class="arch-box web">
+          <div style="font-size:1.2rem">🌐</div>
+          <strong>Web Browser</strong><br>
+          <span style="font-size:.7rem">Blockly Block Coding<br>Chat UI (AI Tutor)<br>Simulation Stage</span>
+        </div>
+      </div>
+
+      <!-- Arrows -->
+      <div class="arch-row">
+        <div class="arch-arrow">
+          <span class="material-icons-round">south</span>
+          HTTP GET /run?cmd=...
+          <span class="material-icons-round">south</span>
+        </div>
+        <div class="arch-arrow" style="margin-left:40px">
+          <span class="material-icons-round">south</span>
+          HTTP POST /analyze
+          <span class="material-icons-round">south</span>
+        </div>
+      </div>
+
+      <!-- Row 2: Hardware + Server -->
+      <div class="arch-row">
+        <div class="arch-box robot">
+          <div style="font-size:1.2rem">🤖</div>
+          <strong>ESP32 Main</strong><br>
+          <span style="font-size:.7rem">WiFi HTTP Server<br>mDNS: MDTrobot.local<br>TFT + Servo + Motor</span>
+        </div>
+        <div class="arch-box server">
+          <div style="font-size:1.2rem">🖥️</div>
+          <strong>Flask Server</strong><br>
+          <span style="font-size:.7rem">Cloud (Render.com)<br>Proxy + Rate Limit<br>Session Management</span>
+        </div>
+      </div>
+
+      <!-- Arrows -->
+      <div class="arch-row">
+        <div class="arch-arrow">
+          <span class="material-icons-round">north</span>
+          Serial2 9600 baud (L/C/R/H/S/A/N/X)
+        </div>
+        <div class="arch-arrow" style="margin-left:40px">
+          <span class="material-icons-round">south</span>
+          google-genai SDK
+          <span class="material-icons-round">south</span>
+        </div>
+      </div>
+
+      <!-- Row 3: Camera + AI -->
+      <div class="arch-row">
+        <div class="arch-box cam">
+          <div style="font-size:1.2rem">📷</div>
+          <strong>XIAO ESP32S3</strong><br>
+          <span style="font-size:.7rem">OV2640 Camera<br>ESP-DL Face Detection<br>Emotion Classification</span>
+        </div>
+        <div class="arch-box ai">
+          <div style="font-size:1.2rem">🧠</div>
+          <strong>Gemini 2.5 Pro</strong><br>
+          <span style="font-size:.7rem">Google API<br>Scaffolding Tutor<br>Socratic Method</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📡 รายละเอียดการเชื่อมต่อ</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>เส้นทาง</th><th>โปรโตคอล</th><th>รายละเอียด</th></tr></thead>
+        <tbody>
+          <tr><td>Web → หุ่นยนต์</td><td>WiFi HTTP GET</td><td><code>http://MDTrobot.local/run?cmd=w;a;s;</code> ผ่าน mDNS บน WiFi เดียวกัน</td></tr>
+          <tr><td>Web → AI Server</td><td>HTTP POST</td><td><code>POST /analyze</code> ส่ง block description + คำถาม → ได้คำตอบ AI</td></tr>
+          <tr><td>AI Server → Gemini</td><td>google-genai SDK</td><td>Python SDK เรียก Gemini 2.5 Pro พร้อม system prompt + history</td></tr>
+          <tr><td>กล้อง → ESP32 Main</td><td>Serial2 (9600 baud)</td><td>ส่งตัวอักษรเดียว: L/C/R (ตำแหน่งหน้า), H/S/A/N/X (อารมณ์/ไม่เจอ)</td></tr>
+          <tr><td>ESP32 → TFT</td><td>SPI</td><td>วาดตา 9 อารมณ์ + Idle Behaviors บนจอ 320×240</td></tr>
+          <tr><td>ESP32 → Servo/Motor</td><td>PWM (PCA9685 I2C)</td><td>6 servo + 2 DC motor ผ่าน TB6612FNG</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📦 Command Protocol — ระบบคำสั่งที่ส่งจากเว็บ</h3>
+    <p>Blockly blocks ถูกแปลงเป็น <strong>string คำสั่งตัวอักษรเดียว</strong> คั่นด้วย <code>;</code> แล้วส่ง HTTP GET ไปยังหุ่นยนต์:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>กลุ่ม</th><th>คำสั่ง</th><th>รหัส</th></tr></thead>
+        <tbody>
+          <tr><td>เคลื่อนที่</td><td>หน้า / หลัง / ซ้าย / ขวา / หยุด / หน่วง</td><td>w / s / a / d / x / z</td></tr>
+          <tr><td>แขน L</td><td>หุบ / ปกติ / กาง</td><td>r / f / v</td></tr>
+          <tr><td>แขน R</td><td>หุบ / ปกติ / กาง</td><td>t / g / b</td></tr>
+          <tr><td>มือ L</td><td>ลง / กลาง / ขึ้น</td><td>1 / 2 / 3</td></tr>
+          <tr><td>มือ R</td><td>ลง / กลาง / ขึ้น</td><td>4 / 5 / 6</td></tr>
+          <tr><td>หัว</td><td>ขวา / กลาง / ซ้าย</td><td>7 / 8 / 9</td></tr>
+          <tr><td>หน้า</td><td>ปกติ/ดูซ้าย/ดูขวา/ยิ้ม/เศร้า/โกรธ/ตกใจ/ง่วง/สับสน/รัก/อาย</td><td>u/y/i/h/j/k/o/n/c/l/e</td></tr>
+          <tr><td>Gripper</td><td>Smart Grab / Release / Verify / Grip N%</td><td>G / P / Q / grip:N</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="highlight">
+      <strong>💡 สำคัญ:</strong> Loop/If ถูก "unroll" ฝั่งเว็บก่อนส่ง — เช่น repeat 3 [forward] = <code>w;w;w;</code> หุ่นยนต์รับแค่ลำดับคำสั่งตรงๆ ไม่ต้องประมวลผล logic เอง
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION 3: HARDWARE ==================== -->
+<section id="hardware" class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(251,146,60,0.15);color:var(--orange)">🔧</div>
+    <h2>ฮาร์ดแวร์ — โครงสร้างปิ่นโต 5 ชั้น</h2>
+    <span class="badge" style="background:rgba(251,146,60,0.15);color:var(--orange)">Hardware</span>
+  </div>
+
+  <div class="card">
+    <h3>🏗️ Modular Design — ซ้อนชั้นแบบปิ่นโต</h3>
+    <p>ออกแบบให้ถอดประกอบง่าย เพิ่ม/ลดชั้นได้ตามต้องการ ขนาดฐาน ~10×10cm สูง ~22cm</p>
+    <div class="layers" style="margin-top:16px">
+      <div class="layer l5"><div class="layer-num">5</div><div class="layer-content"><h4>🗣️ Head — หัว</h4><span class="h">สูง 75mm</span><p>TFT LCD 2.8" (ตา 9 อารมณ์), XIAO ESP32S3 + OV2640 กล้อง, MPR121 + Copper Pad (สัมผัสหัว)</p></div></div>
+      <div class="layer l4"><div class="layer-num">4</div><div class="layer-content"><h4>💪 Neck/Arms — คอ+แขน</h4><span class="h">สูง 45mm</span><p>MG996R ×2 (ยกแขน), MG90S ×2 (หนีบ), SG90 ×2 (หมุนหัว+ก้ม)</p></div></div>
+      <div class="layer l3"><div class="layer-num">3</div><div class="layer-content"><h4>🧠 Brain — สมอง</h4><span class="h">สูง 25mm</span><p>ESP32 DevKit 38-pin, PCA9685 PWM Driver, Perfboard, Capacitors, JST headers</p></div></div>
+      <div class="layer l2"><div class="layer-num">2</div><div class="layer-content"><h4>⚡ Electronics — ไฟฟ้า</h4><span class="h">สูง 24mm</span><p>BMS 2S 16A, TB6612FNG motor driver, CM620 ชาร์จเจอร์ USB-C</p></div></div>
+      <div class="layer l1"><div class="layer-num">1</div><div class="layer-content"><h4>🛞 Base — ฐาน</h4><span class="h">สูง 40mm</span><p>TT Motor ×2 + Encoder, 18650 ×2 แบต, LM2596 buck, IR sensor ×2, VL53L0X, ตีนตะขาบ 130mm</p></div></div>
+    </div>
+    <div class="highlight success" style="margin-top:16px">
+      <strong>✨ จุดเด่นสำหรับ IP:</strong> ไม่มีหุ่นยนต์การศึกษาตัวไหนในตลาดที่ใช้โครงสร้างแบบ "ปิ่นโต" ซ้อนชั้นเพิ่ม-ลดได้แบบนี้ — ส่วนใหญ่เป็นตัวถังชิ้นเดียว fix ตายตัว
+    </div>
+    <div class="highlight warn" style="margin-top:8px">
+      <strong>📌 สถานะฮาร์ดแวร์ (ทำแล้ว vs แผน):</strong><br>
+      ✅ ทำแล้ว: โครงสร้างปิ่นโต, แขน+มือ, TFT ตา, servo ×5, มอเตอร์, แบต, เว็บ<br>
+      ⏳ แผน/ยังไม่ติดตั้ง: VL53L0X (วัดระยะ), MPR121 (สัมผัสหัว), PCA9685 (I2C servo), SG90 ตัวที่ 2 (ก้มหัว)<br>
+      <strong>→ บอก สวนพ. ตามจริงว่ามีทั้งส่วนที่เสร็จและกำลังพัฒนา</strong>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="collapsible" onclick="toggleCollapse(this)">📋 รายการอุปกรณ์ทั้งหมด (BOM) — 21 รายการ ~2,770 บาท</h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>อุปกรณ์</th><th>จำนวน</th><th>หน้าที่</th><th>ราคา (฿)</th></tr></thead>
+          <tbody>
+            <tr><td>ESP32 DevKit V1 38 Pin</td><td>1</td><td>สมองหลัก, WiFi, HTTP, TFT, servo/motor</td><td>~250</td></tr>
+            <tr><td>XIAO ESP32S3 Sense + OV2640</td><td>1</td><td>กล้อง, ESP-DL face detection, จำแนกอารมณ์</td><td>~350</td></tr>
+            <tr><td>TFT LCD 2.8" SPI (ST7789)</td><td>1</td><td>แสดงตา 9 อารมณ์ 320×240px</td><td>~180</td></tr>
+            <tr><td>MG996R Servo (แขน)</td><td>2</td><td>ยก-ลดแขนซ้าย/ขวา</td><td>~300</td></tr>
+            <tr><td>MG90S Servo (มือ)</td><td>2</td><td>หนีบ-คลายมือซ้าย/ขวา</td><td>~160</td></tr>
+            <tr><td>SG90 Servo (หัว)</td><td>2</td><td>หมุนหัวซ้าย-ขวา + ก้ม-เงย</td><td>~70</td></tr>
+            <tr><td>PCA9685 I2C PWM Driver</td><td>1</td><td>ควบคุม 6 servo ผ่าน I2C (ใช้แค่ 2 GPIO)</td><td>~80</td></tr>
+            <tr><td>TT Motor + Encoder</td><td>2</td><td>ขับเคลื่อนตีนตะขาบ</td><td>~200</td></tr>
+            <tr><td>TB6612FNG Motor Driver</td><td>1</td><td>ควบคุมทิศ/ความเร็วมอเตอร์</td><td>~45</td></tr>
+            <tr><td>HW-201 IR Sensor</td><td>2</td><td>เดินตามเส้น</td><td>~40</td></tr>
+            <tr><td>18650 VTC6A 3000mAh</td><td>2</td><td>แบตเตอรี่หลัก 7.4V</td><td>~300</td></tr>
+            <tr><td>BMS 2S 16A</td><td>1</td><td>ป้องกันแบตเตอรี่</td><td>~30</td></tr>
+            <tr><td>CM620 Charger 2S USB-C</td><td>1</td><td>ชาร์จแบตผ่าน USB-C</td><td>~55</td></tr>
+            <tr><td>LM2596 Buck Converter</td><td>1</td><td>แปลง 7.4V → 5V</td><td>~25</td></tr>
+            <tr><td>KCD-105 Switch</td><td>1</td><td>สวิตช์เปิด-ปิด</td><td>~10</td></tr>
+            <tr><td>VL53L0X Laser ToF</td><td>1</td><td>วัดระยะ (ตรวจสอบการหยิบจับ)</td><td>~80</td></tr>
+            <tr><td>MPR121 Touch + Copper Pad</td><td>1+1</td><td>เซ็นเซอร์สัมผัสหัว (12 channels)</td><td>~110</td></tr>
+            <tr><td>Capacitors (หลายค่า)</td><td>6</td><td>กรองไฟ servo/motor</td><td>~15</td></tr>
+            <tr><td>JST-XH Connectors</td><td>~23</td><td>ขั้วต่อสาย 9 สี</td><td>~50</td></tr>
+            <tr><td>Perfboard + สายไฟ</td><td>1 set</td><td>แผงวงจร + สายเชื่อม</td><td>~70</td></tr>
+            <tr><td>3D Print (PETG+PLA)</td><td>1 set</td><td>ตัวถัง 5 ชั้น, แขน, หัว, ล้อ</td><td>~300</td></tr>
+          </tbody>
+          <tfoot><tr><td colspan="3"><strong>รวมทั้งหมด</strong></td><td><strong>~2,770</strong></td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🦾 ระบบแขนแบบมนุษย์ — Humanoid Arm Mechanism</h3>
+    <p>ใช้แขน 2 ข้างหนีบ<strong>จากด้านข้างตัว</strong>เข้าหากัน (เหมือนคนอุ้มของ) แทนที่จะใช้ก้ามปูหนีบจากด้านหน้าแบบหุ่นยนต์ทั่วไป</p>
+    <ul>
+      <li><strong>MG996R ×2</strong> — ยกแขนขึ้น-ลง (shoulder pivot)</li>
+      <li><strong>MG90S ×2</strong> — หนีบ-คลายมือ (gripper)</li>
+      <li><strong>S-Curve Path</strong> — แขนโค้งหลบหัวและตัวถังไม่ให้ชน</li>
+      <li><strong>Smart Grip</strong> — หนีบทีละ 3% พร้อมตรวจจับ stall (ถอยกลับ 3° ถ้าติด)</li>
+    </ul>
+    <div class="highlight success">
+      <strong>✨ จุดเด่นสำหรับ IP:</strong> ในหุ่นยนต์การศึกษาไม่มีตัวไหนใช้กลไกแขนแบบมนุษย์ 2 ข้างที่หนีบเข้าหากัน — ปกติใช้ก้ามปู (gripper) หรือ claw จากด้านหน้าเท่านั้น
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="collapsible" onclick="toggleCollapse(this)">📌 Pin Mapping (ESP32 DevKit 38-pin)</h3>
+    <div class="collapse-body">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>GPIO</th><th>อุปกรณ์</th><th>หมายเหตุ</th></tr></thead>
+          <tbody>
+            <tr><td>25 (SDA)</td><td>I2C Data</td><td>PCA9685 → VL53L0X → MPR121 (Daisy Chain)</td></tr>
+            <tr><td>26 (SCL)</td><td>I2C Clock</td><td>I2C Bus</td></tr>
+            <tr><td>4, 16, 17, 5, 18, 19</td><td>TFT SPI</td><td>CS, DC, RST, MOSI, SCK, MISO</td></tr>
+            <tr><td>21, 14, 13, 12</td><td>Motor IN1-IN4</td><td>TB6612FNG direction</td></tr>
+            <tr><td>22, 23</td><td>Motor ENA, ENB</td><td>TB6612FNG PWM speed</td></tr>
+            <tr><td>15, 34</td><td>IR Sensor L, R</td><td>HW-201 line following</td></tr>
+            <tr><td>35 (RX), 2 (TX)</td><td>Camera Serial2</td><td>9600 baud รับข้อมูลจากกล้อง</td></tr>
+            <tr><td>33, 32, 27</td><td>Encoder A, B, Signal</td><td>Motor encoder feedback</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION 4: SOFTWARE (Part 2) ==================== -->
+<section id="software" class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(99,102,241,0.15);color:#a5b4fc">💻</div>
+    <h2>ซอฟต์แวร์</h2>
+    <span class="badge" style="background:rgba(99,102,241,0.15);color:#a5b4fc">Software</span>
+  </div>
+
+  <div class="card">
+    <h3>🧩 เว็บ Block Coding — Google Blockly 10.x</h3>
+    <p>หน้าเว็บแอป Single Page สำหรับลาก-วางบล็อกคำสั่งแล้วส่งไปหุ่นยนต์ผ่าน WiFi</p>
+    <h4>9 หมวดบล็อก</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>หมวด</th><th>สี</th><th>ตัวอย่างบล็อก</th></tr></thead>
+        <tbody>
+          <tr><td>Motion</td><td style="color:#4C97FF">🔵 น้ำเงิน</td><td>forward, backward, left, right</td></tr>
+          <tr><td>Arm</td><td style="color:#9966FF">🟣 ม่วง</td><td>Left/Right Arm: Close/Normal/Open</td></tr>
+          <tr><td>Hand</td><td style="color:#CF63CF">💗 ชมพู</td><td>Left/Right Hand: Down/Center/Up</td></tr>
+          <tr><td>Head</td><td style="color:#FFBF00">🟡 เหลือง</td><td>Turn Right / Center / Turn Left</td></tr>
+          <tr><td>Face</td><td style="color:#FF6680">🔴 แดง</td><td>Normal, Happy, Sad, Angry, Shocked, Sleepy, Confused, Love, Shy</td></tr>
+          <tr><td>Gripper</td><td style="color:#5CB1D6">🩵 ฟ้า</td><td>Smart Grab, Release, Grab & Lift, Grip N%</td></tr>
+          <tr><td>Control</td><td style="color:#FFAB19">🟠 ส้ม</td><td>START PROGRAM, delay, Wait N sec, repeat, while, if/else</td></tr>
+          <tr><td>Operator</td><td style="color:#59C059">🟢 เขียว</td><td>เปรียบเทียบ (=, ≠, <, >), true/false, ตัวเลข</td></tr>
+          <tr><td>Variables</td><td style="color:#FF8C1A">🟧 ส้มเข้ม</td><td>สร้างตัวแปร, ตั้งค่า, ดึงค่า</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h4>ฟีเจอร์เว็บ</h4>
+    <ul>
+      <li><strong>Simulation Stage</strong> — พื้นที่จำลอง 320×240px แสดงสไปรต์หุ่นเคลื่อนที่ตามคำสั่ง</li>
+      <li><strong>Pre-Run Validation</strong> — ตรวจ 7 ข้อผิดพลาดก่อนรัน (ไม่มี START, บล็อกลอย, loop ว่าง ฯลฯ)</li>
+      <li><strong>Real-time Warnings</strong> — ไอคอนเตือนบนบล็อกแบบ real-time</li>
+      <li><strong>Connection Monitor</strong> — ping หุ่นทุก 2.5 วินาที แสดงสถานะ online/offline</li>
+      <li><strong>Scratch 3.0 Theme</strong> — UI แบบ Zelos renderer บล็อกมน สีสันสดใส</li>
+    </ul>
+    <h4>โจทย์ฝึก 3 ระดับ (ใช้ประเมินผล)</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ระดับ</th><th>โจทย์</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag tag-green">ง่าย — Sequential</span></td><td>เดินรูปตัว L, ท่าทักทาย</td></tr>
+          <tr><td><span class="tag tag-orange">กลาง — If/Else</span></td><td>เลือกอารมณ์ตามตัวแปร, เลือกท่าเต้นตามตัวเลข</td></tr>
+          <tr><td><span class="tag tag-pink">ยาก — Loop</span></td><td>เดินสี่เหลี่ยม (repeat 4: forward→left), ท่าเต้นวนซ้ำ</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🧠 AI ผู้ช่วยสอน — Gemini 2.5 Pro + Scaffolding</h3>
+    <p>ระบบ Chat UI แบบ Livestream ลอยมุมขวาล่าง ใช้ Gemini 2.5 Pro ผ่าน Flask Server บน Render.com</p>
+    <h4>หลักการ Scaffolding (7 กฎ)</h4>
+    <ol>
+      <li><strong>ไม่ให้คำตอบตรง</strong> — ใช้ Socratic Method ถามกลับ ให้คำใบ้</li>
+      <li>ชมเมื่อถูก + แนะให้ลองอะไรที่ยากขึ้น</li>
+      <li>ชี้ข้อผิดพลาดพร้อมคำใบ้ ไม่ใช่คำตอบ</li>
+      <li>ตอบสั้น 2-3 ประโยค ภาษาไทย มี emoji</li>
+      <li>ตรวจ 8 pattern ข้อผิดพลาดอัตโนมัติ</li>
+      <li>เก็บ context สูงสุด 20 ข้อความ/session</li>
+      <li>กรอง thinking/reasoning + Markdown ออกก่อนส่งกลับ</li>
+    </ol>
+    <h4>สถาปัตยกรรม AI</h4>
+    <p>Frontend → <strong>Flask Server</strong> (ซ่อน API Key + Rate Limit + Session) → <strong>Gemini 2.5 Pro API</strong> → JSON Response</p>
+    <h4>Auto-Analysis</h4>
+    <p>เมื่อผู้ใช้เปลี่ยนบล็อก AI จะวิเคราะห์โค้ดอัตโนมัติ (debounce 5 วินาที) โดยแปลง block tree เป็นข้อความอ่านง่าย แล้วส่งให้ Gemini วิเคราะห์</p>
+  </div>
+
+  <div class="card">
+    <h3>🤖 โค้ดหุ่นยนต์ — Arduino ESP32 (Robo.ino ~1,113 บรรทัด)</h3>
+    <ul>
+      <li><strong>WiFi STA Mode</strong> — เชื่อมต่อ router, รัน HTTP Server port 80, mDNS: <code>MDTrobot.local</code></li>
+      <li><strong>Endpoint:</strong> <code>GET /run?cmd=...</code> รับ command string → parse → execute ทีละคำสั่ง</li>
+      <li><strong>Emotion State Machine</strong> — 9 อารมณ์, hold time 2000ms ป้องกัน jitter, auto-revert 2500ms</li>
+      <li><strong>Servo Lerp</strong> — หมุนหัวแบบ smooth ด้วย linear interpolation (speed=0.18), auto-detach 2s ประหยัดไฟ</li>
+      <li><strong>Body-Face Coordination</strong> — แต่ละอารมณ์ trigger ท่าทาง servo + ตาพร้อมกัน</li>
+      <li><strong>Smart Gripper</strong> — หนีบทีละ 3% + stall detection + VL53L0X verify</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>📷 ระบบกล้อง — ESP-DL Face Detection + Emotion</h3>
+    <p>XIAO ESP32S3 Sense + OV2640 ประมวลผลบนชิป (Edge AI) ไม่ต้องส่งขึ้น cloud</p>
+    <h4>Pipeline 8 ขั้นตอน</h4>
+    <ol>
+      <li>Capture 240×240 RGB565 จาก OV2640</li>
+      <li>Face Detection — MSR01 (bounding box ~10ms)</li>
+      <li>Landmark Detection — MNP01 (5 keypoints ~50-60ms)</li>
+      <li>EMA Smoothing (α=0.5)</li>
+      <li>Adaptive Baseline Calibration (rate=0.003)</li>
+      <li>Ratio Calculation (m=mouth/eye, n=nose-mouth/eye)</li>
+      <li>Hysteresis Filter (2 consecutive frames + 500ms hold)</li>
+      <li>Emotion Classification → ส่ง Serial ไป ESP32 Main</li>
+    </ol>
+    <div class="highlight">
+      <strong>📊 ประสิทธิภาพ:</strong> FPS ~16 (จาก ~3-5 เดิม), Latency ~0.6s (จาก ~6-7s เดิม), Heap stable ไม่ crash
+    </div>
+    <div class="highlight warn">
+      <strong>⚠️ จำไว้:</strong> กล้องตรวจจับได้เพียง <strong>3 อารมณ์</strong> (Normal, Happy, Sad) เพราะ 5 keypoints ไม่มีคิ้ว → อีก 6 อารมณ์ (Angry, Shocked, Sleepy, Confused, Love, Shy) สั่งผ่าน Blockly เท่านั้น
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>👁️ ระบบตา — TFT 320×240 + 9 อารมณ์ + Idle Behaviors</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>อารมณ์</th><th>รหัส</th><th>ตา TFT</th><th>ท่าทาง Servo</th><th>แหล่ง</th></tr></thead>
+        <tbody>
+          <tr><td>😐 Normal</td><td>N</td><td>เปิดปกติ ม่านตากลาง</td><td>แขนกลาง หัวตรง</td><td>กล้อง/default</td></tr>
+          <tr><td>😊 Happy</td><td>H</td><td>ตาโค้งยิ้ม</td><td>โบกมือ ×2 เอียงหัว</td><td>กล้อง/Blockly</td></tr>
+          <tr><td>😢 Sad</td><td>S</td><td>ตาหลบ น้ำตา ครึ่งปิด</td><td>กอดตัว หัวหันหนี</td><td>กล้อง/Blockly</td></tr>
+          <tr><td>😠 Angry</td><td>A</td><td>ตาเฉียง คิ้วขมวด</td><td>แขนหุบ หัวหันเล็กน้อย</td><td>Blockly เท่านั้น</td></tr>
+          <tr><td>😲 Shocked</td><td>O</td><td>ตาโต ม่านตาเล็ก วงแดง</td><td>แขนดึงเข้า มือบัง</td><td>Blockly เท่านั้น</td></tr>
+          <tr><td>😴 Sleepy</td><td>Z</td><td>ตาหรี่แคบ</td><td>แขนกลาง หัวตรง</td><td>Blockly เท่านั้น</td></tr>
+          <tr><td>😕 Confused</td><td>C</td><td>ม่านตาไม่เท่ากัน เครื่องหมาย?</td><td>แขนกลาง หัวหัน</td><td>Blockly เท่านั้น</td></tr>
+          <tr><td>😍 Love</td><td>V</td><td>หัวใจใหญ่กลาง (เต้น)</td><td>แขนกาง เอียงหัว</td><td>Blockly เท่านั้น</td></tr>
+          <tr><td>😳 Shy</td><td>B</td><td>ตาเบือน แก้มแดง (เส้นอนิเมะ)</td><td>หัวหันซ้าย แขนหุบ มือพับ</td><td>Blockly เท่านั้น</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h4>Idle Behaviors — ทำให้หุ่นมี "ชีวิต"</h4>
+    <ul>
+      <li><strong>Blink</strong> — กระพริบตา 1-3 ครั้ง ทุก 1.5-3.5 วินาที (สุ่ม)</li>
+      <li><strong>Glance</strong> — มองซ้าย/ขวา ทุก 4-10 วินาที</li>
+      <li><strong>Sigh</strong> — ถอนหายใจ (ตาครึ่งปิด) ทุก 15-30 วินาที</li>
+      <li><strong>Head Look</strong> — หัวหันเล็กน้อย ทุก 4-12 วินาที (servo lerp)</li>
+      <li><strong>Heartbeat</strong> — หัวใจเต้น (lub-dub) ใน Love mode</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ==================== SECTION 5: LOGIC ==================== -->
+<section id="logic" class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(244,114,182,0.15);color:var(--pink)">🧠</div>
+    <h2>ลอจิกและเทคนิคที่คิดเอง</h2>
+    <span class="badge" style="background:rgba(244,114,182,0.15);color:var(--pink)">Your Logic</span>
+  </div>
+
+  <div class="highlight warn">
+    <strong>⚠️ สำคัญสำหรับ IP:</strong> ส่วนนี้คือ "ทรัพย์สินทางปัญญา" ที่แท้จริงของเรา — ไม่ใช่ตัวโค้ด (ที่ AI ช่วยเขียน) แต่เป็น <strong>ตรรกะ, วิธีแก้ปัญหา, การออกแบบระบบ</strong> ที่เราคิดขึ้นมาเอง
+  </div>
+
+  <div class="card">
+    <h3>🔬 Emotion Detection Pipeline (คิดเอง)</h3>
+    <p>ออกแบบ pipeline 8 ขั้นตอนที่ทำงานบน ESP32 (Edge AI) ให้ลื่นไหลและเป็นธรรมชาติ:</p>
+    <h4>ปัญหาที่เจอ → วิธีแก้ที่คิด</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ปัญหา</th><th>วิธีแก้ที่คิด</th><th>ค่าที่ตั้ง</th></tr></thead>
+        <tbody>
+          <tr><td>Keypoints กระเด้งไปมาเพราะ noise</td><td><strong>EMA Smoothing</strong> — ถ่วงน้ำหนักเฉลี่ยเคลื่อนที่</td><td>α = 0.5</td></tr>
+          <tr><td>แต่ละคนหน้าไม่เหมือนกัน baseline ต่างกัน</td><td><strong>Adaptive Baseline</strong> — ปรับ baseline ช้าๆ ตามใบหน้าจริง</td><td>rate = 0.003</td></tr>
+          <tr><td>อารมณ์เปลี่ยนกระตุก สลับไปมาเร็ว</td><td><strong>Hysteresis Filter</strong> — ต้องตรวจเจอ 2 เฟรมต่อเนื่อง + hold 500ms ก่อนเปลี่ยน</td><td>2 frames + 500ms + 2000ms</td></tr>
+          <tr><td>กล้อง 5 keypoints ไม่มีคิ้ว จับ Angry ไม่ได้</td><td><strong>Ratio Calculation</strong> — คำนวณสัดส่วน mouth/eye, nose-mouth/eye แทน</td><td>m, n, d ratios</td></tr>
+          <tr><td>เฟรมเรตต่ำ ส่งบ่อยเกิน</td><td><strong>จับ 10 เฟรม ส่งทีละครั้ง</strong> + ส่งเมื่อ 2 เฟรมตรงกัน</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="highlight success">
+      <strong>💡 สูตรที่ใช้:</strong><br>
+      EMA: <code>smoothed = α × new + (1-α) × prev</code><br>
+      Baseline: <code>baseline = baseline + rate × (current - baseline)</code><br>
+      Smile: <code>m = mouth_width / eye_distance</code><br>
+      Sad: <code>n = nose_mouth_dist / eye_distance</code>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🤖 Body-Face Coordination (คิดเอง)</h3>
+    <p>ออกแบบให้ทุกอารมณ์ trigger ทั้ง <strong>ตา TFT + แขน + มือ + หัว</strong> พร้อมกัน แบบสมจริง:</p>
+    <ul>
+      <li><strong>Happy</strong> → ตาโค้งยิ้ม + โบกมือ + เอียงหัว</li>
+      <li><strong>Sad</strong> → ตาน้ำตา + กอดตัวเอง + หัวก้ม</li>
+      <li><strong>Love</strong> → หัวใจเต้น + แขนกาง + เอียงหัว (heartbeat animation)</li>
+      <li><strong>Shy</strong> → ตาเบือน + แก้มแดง + หัวหันหนี + แขนหุบ</li>
+    </ul>
+    <p>ไม่ใช่แค่เปลี่ยนตา — ร่างกายทั้งตัวแสดงอารมณ์เหมือนมีชีวิต</p>
+  </div>
+
+  <div class="card">
+    <h3>🎭 Idle Behaviors System (คิดเอง)</h3>
+    <p>ออกแบบพฤติกรรม "เวลาว่าง" ให้หุ่นดูมีชีวิต แม้ไม่มีใครสั่ง:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>พฤติกรรม</th><th>ความถี่</th><th>รายละเอียด</th></tr></thead>
+        <tbody>
+          <tr><td>Blink กระพริบตา</td><td>1.5-3.5 วินาที</td><td>1-3 ครั้ง (สุ่ม), non-blocking state machine</td></tr>
+          <tr><td>Glance ชำเลืองมอง</td><td>4-10 วินาที</td><td>ม่านตาเลื่อนซ้าย/ขวาแล้วกลับ</td></tr>
+          <tr><td>Sigh ถอนหายใจ</td><td>15-30 วินาที</td><td>ตาครึ่งปิดแล้วเปิด</td></tr>
+          <tr><td>Head Look หัวหัน</td><td>4-12 วินาที</td><td>Servo lerp หันหัวเล็กน้อย</td></tr>
+          <tr><td>Heartbeat หัวใจเต้น</td><td>ใน Love mode</td><td>lub-dub rhythm animation</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>ทั้งหมดเป็น <strong>non-blocking state machine</strong> — ทำงานพร้อมกันโดยไม่ block loop หลัก</p>
+  </div>
+
+  <div class="card">
+    <h3>🦾 Smart Gripper Algorithm (คิดเอง)</h3>
+    <ul>
+      <li><strong>smartGrip()</strong> — หนีบทีละ 3% ค่อยๆ เพิ่ม 0→100% พร้อม stall detection (ถ้าติดถอย 3°)</li>
+      <li><strong>gripAndVerify()</strong> — ลดแขน → smart grip → ยกขึ้น → ตรวจสอบด้วย VL53L0X</li>
+      <li><strong>gripSync()</strong> — 2 มือหนีบพร้อมกัน synchronized</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🔗 ระบบเชื่อมต่อ Web-Robot (คิดเอง)</h3>
+    <ul>
+      <li>ออกแบบ <strong>Command Protocol</strong> ตัวอักษรเดียว + semicolon — เรียบง่ายแต่ครอบคลุมทุกฟังก์ชัน</li>
+      <li>ออกแบบ <strong>Logic Unrolling</strong> — loop/if ประมวลผลฝั่งเว็บแล้วส่ง flat command string ไปหุ่น</li>
+      <li>ออกแบบ <strong>describeWorkspace()</strong> — แปลง block tree เป็นข้อความที่ AI อ่านเข้าใจ</li>
+      <li>ออกแบบ <strong>Servo Lerp</strong> — linear interpolation speed=0.18 ให้หัวหมุน smooth</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🏗️ การออกแบบฮาร์ดแวร์ (คิด + ทำเอง 100%)</h3>
+    <ul>
+      <li><strong>โครงสร้างปิ่นโต 5 ชั้น</strong> — ออกแบบใน 3D software แล้ว print</li>
+      <li><strong>S-Curve Arm Path</strong> — แขนโค้งหลบหัว/ตัว ไม่ชน (มี arm simulator ทดสอบ)</li>
+      <li><strong>กลไกแขนแบบมนุษย์</strong> — หนีบจากข้าง ไม่ใช่ก้ามปู</li>
+      <li><strong>ล้อตีนตะขาบ</strong> — ออกแบบ tank track สำหรับหุ่นเล็ก</li>
+      <li><strong>JST-XH 9 สี</strong> — ระบบสายไฟ color-coded ประกอบง่าย</li>
+      <li><strong>จัดวางอุปกรณ์</strong> — low center of gravity (แบตชั้นล่าง), I2C daisy-chain ประหยัด GPIO</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ==================== SECTION 6: OPEN SOURCE ==================== -->
+<section id="opensource" class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(34,211,238,0.15);color:var(--cyan)">📂</div>
+    <h2>Open Source & Libraries ที่ใช้</h2>
+    <span class="badge" style="background:rgba(34,211,238,0.15);color:var(--cyan)">Open Source</span>
+  </div>
+
+  <div class="highlight warn">
+    <strong>⚠️ สำคัญสำหรับ IP:</strong> สวนพ. จะถามว่า "ส่วนไหนเป็นของคนอื่น ส่วนไหนเป็นของเรา" — ตารางนี้ตอบได้ชัดเจน
+  </div>
+
+  <div class="card">
+    <h3>📦 สิ่งที่ใช้ของคนอื่น (ไม่สามารถจดเป็นของเราได้)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Library / API</th><th>เจ้าของ</th><th>License</th><th>เราใช้ทำอะไร</th></tr></thead>
+        <tbody>
+          <tr><td>Google Blockly 10.x</td><td>Google</td><td>Apache 2.0</td><td>โครง UI ลาก-วางบล็อก</td></tr>
+          <tr><td>Gemini 2.5 Pro API</td><td>Google</td><td>API Terms</td><td>AI ผู้ช่วยสอน (LLM)</td></tr>
+          <tr><td>ESP-DL (MSR01 + MNP01)</td><td>Espressif</td><td>Apache 2.0</td><td>Face detection + 5 keypoints</td></tr>
+          <tr><td>TFT_eSPI</td><td>Bodmer</td><td>BSD</td><td>ขับจอ TFT LCD</td></tr>
+          <tr><td>ESP32Servo</td><td>Community</td><td>LGPL</td><td>ควบคุม servo</td></tr>
+          <tr><td>Flask + Flask-CORS</td><td>Pallets</td><td>BSD</td><td>Backend server</td></tr>
+          <tr><td>google-genai SDK</td><td>Google</td><td>Apache 2.0</td><td>เรียก Gemini API</td></tr>
+          <tr><td>Arduino Core ESP32</td><td>Espressif</td><td>LGPL</td><td>เฟรมเวิร์กหลัก MCU</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>✅ สิ่งที่เป็นของเรา (สามารถจดได้)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ผลงาน</th><th>ประเภท</th><th>รายละเอียด</th></tr></thead>
+        <tbody>
+          <tr><td>โครงสร้างปิ่นโต 5 ชั้น</td><td><span class="tag tag-orange">ฮาร์ดแวร์</span></td><td>ออกแบบ 3D + print ทั้งหมด</td></tr>
+          <tr><td>กลไกแขนแบบมนุษย์ + S-Curve</td><td><span class="tag tag-orange">ฮาร์ดแวร์</span></td><td>หนีบจากข้างตัว + แขนโค้งหลบ</td></tr>
+          <tr><td>ล้อตีนตะขาบ</td><td><span class="tag tag-orange">ฮาร์ดแวร์</span></td><td>ออกแบบ tank track สำหรับหุ่นเล็ก</td></tr>
+          <tr><td>Emotion Pipeline (EMA+Hysteresis+Baseline)</td><td><span class="tag tag-pink">อัลกอริทึม</span></td><td>ตรรกะการจัดการอารมณ์ธรรมชาติ</td></tr>
+          <tr><td>Body-Face Coordination</td><td><span class="tag tag-pink">อัลกอริทึม</span></td><td>ออกแบบท่าทาง 9 อารมณ์</td></tr>
+          <tr><td>Idle Behaviors System</td><td><span class="tag tag-pink">อัลกอริทึม</span></td><td>ระบบพฤติกรรมมีชีวิต</td></tr>
+          <tr><td>Smart Gripper Algorithm</td><td><span class="tag tag-pink">อัลกอริทึม</span></td><td>หนีบ incremental + stall detect</td></tr>
+          <tr><td>Command Protocol</td><td><span class="tag tag-accent">ระบบ</span></td><td>ตัวอักษรเดียว + Logic Unrolling</td></tr>
+          <tr><td>System Architecture</td><td><span class="tag tag-accent">ระบบ</span></td><td>Web ↔ Robot ↔ Camera ↔ AI ทั้งระบบ</td></tr>
+          <tr><td>หน้าตาหุ่นยนต์</td><td><span class="tag tag-cyan">ดีไซน์</span></td><td>รูปทรงภายนอก ใบหน้า ตัวถัง</td></tr>
+          <tr><td>Scaffolding System Prompt</td><td><span class="tag tag-accent">ระบบ</span></td><td>7 กฎที่ออกแบบให้ AI สอนแบบ Socratic</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>💡 เรื่อง Vibe Coding — AI ช่วยเขียนโค้ด</h3>
+    <div class="highlight">
+      <strong>ข้อเท็จจริง:</strong> โค้ดส่วนใหญ่ (เว็บ + Arduino เวอร์ชันหลังๆ) ใช้ AI (Gemini/Claude) เป็นผู้ช่วยเขียน เราเป็นคน <strong>คิดลอจิก ออกแบบวิธีแก้ปัญหา ตรวจสอบ และควบคุม</strong>
+    </div>
+    <h4>วิธีอธิบายกับ สวนพ.:</h4>
+    <ol>
+      <li>โค้ดที่ AI สร้าง → <strong>ไม่สามารถจดลิขสิทธิ์ซอร์สโค้ดตรงๆ</strong> ในชื่อเรา</li>
+      <li>แต่ <strong>"ตรรกะ" และ "สถาปัตยกรรม"</strong> ที่เราคิด → เป็นทรัพย์สินทางปัญญาของเรา</li>
+      <li><strong>ฮาร์ดแวร์ 100%</strong> ออกแบบ + ทำเอง → จดสิทธิบัตรได้เต็มที่</li>
+      <li>AI เป็นแค่ <strong>"เครื่องมือ"</strong> เหมือนใช้ CAD วาดแบบ — ผลงานยังเป็นของผู้ออกแบบ</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ==================== SECTION 7: NOVELTY ==================== -->
+<section id="novelty" class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(251,191,36,0.15);color:var(--yellow)">⭐</div>
+    <h2>จุดเด่น & Novelty</h2>
+    <span class="badge" style="background:rgba(251,191,36,0.15);color:var(--yellow)">Novelty</span>
+  </div>
+
+  <div class="card">
+    <h3>🔍 3 Research Gaps ที่ค้นพบ</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ประเภท Gap</th><th>ปัญหาที่มีอยู่</th><th>METO แก้ยังไง</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag tag-orange">Integration Gap</span></td><td>หุ่นสำเร็จรูปแยก coding กับ engineering — นักเรียนแค่สั่ง ไม่เข้าใจข้างใน</td><td>DIY Modular ประกอบเอง + Block Coding รวมในตัว</td></tr>
+          <tr><td><span class="tag tag-pink">Emotional Gap</span></td><td>mBot, Edison เน้นแค่โค้ด ไม่มีปฏิสัมพันธ์ทางอารมณ์ → ขาดแรงจูงใจ</td><td>ตรวจจับอารมณ์ + แสดงอารมณ์ 9 แบบ + Body gesture</td></tr>
+          <tr><td><span class="tag tag-accent">Methodology Gap</span></td><td>ระบบเดิมใช้ 1-to-1 mapping (ตรวจ→เปลี่ยนทันที) → กระตุก ไม่ธรรมชาติ</td><td>EMA + Hysteresis + Adaptive Baseline บน Edge AI</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>⚔️ เปรียบเทียบกับคู่แข่ง</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ฟีเจอร์</th><th>LEGO EV3</th><th>mBot</th><th>Edison</th><th>Cue</th><th>Thymio</th><th style="color:var(--accent)">METO</th></tr></thead>
+        <tbody>
+          <tr><td>💰 ราคา (฿)</td><td>~15,000</td><td>~3,500</td><td>~4,000</td><td>~8,000</td><td>~4,500</td><td style="color:var(--green);font-weight:700">~2,770</td></tr>
+          <tr><td>🧩 Block Coding</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td style="color:var(--green)">✅</td></tr>
+          <tr><td>🔧 DIY ประกอบเอง</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td style="color:var(--green)">✅ (ปิ่นโต)</td></tr>
+          <tr><td>😊 แสดงอารมณ์</td><td>❌</td><td>❌</td><td>❌</td><td>✅ (จำกัด)</td><td>❌</td><td style="color:var(--green)">✅ (9 แบบ)</td></tr>
+          <tr><td>📷 ตรวจจับอารมณ์คน</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td style="color:var(--green)">✅ Edge AI</td></tr>
+          <tr><td>🧠 AI Tutor</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td style="color:var(--green)">✅ Scaffolding</td></tr>
+          <tr><td>🦾 แขนหยิบจับ</td><td>✅ (ก้ามปู)</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td style="color:var(--green)">✅ (แบบมนุษย์)</td></tr>
+          <tr><td>🎭 พฤติกรรมมีชีวิต</td><td>❌</td><td>❌</td><td>❌</td><td>✅ (จำกัด)</td><td>❌</td><td style="color:var(--green)">✅ (Idle+Body)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="highlight success">
+      <strong>🏆 สรุป:</strong> METO เป็นหุ่นยนต์การศึกษาตัวเดียวในตลาดที่รวม <strong>DIY + Block Coding + Emotion AI + AI Tutor + แขนมนุษย์</strong> ในราคาต่ำกว่า 3,000 บาท
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🌟 สิ่งที่ไม่มีใครเคยทำ (เน้นจำ!)</h3>
+    <ol>
+      <li><strong>โครงสร้างปิ่นโต</strong> — ไม่มีหุ่นยนต์การศึกษาตัวไหนซ้อนชั้นเพิ่ม-ลดได้</li>
+      <li><strong>กลไกแขนแบบมนุษย์</strong> — หนีบจากข้างตัวเข้าหากัน แทนก้ามปู</li>
+      <li><strong>Edge AI Emotion บน ESP32</strong> — ใช้ EMA+Hysteresis+Adaptive Baseline บนชิปเล็ก (คนอื่นทำบน PC)</li>
+      <li><strong>Full-Stack 3 ชั้น</strong> — Web Block IDE + Cloud AI Tutor + Embedded AI รวมในแพลตฟอร์มเดียว</li>
+      <li><strong>หุ่นยนต์มีอารมณ์ + Block Coding</strong> — ไม่มีตัวไหนในตลาดที่รวมทั้ง 2 อย่างในราคาถูก</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>📚 งานวิจัยที่สนับสนุน Novelty (ถ้าถูกถาม)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>งานวิจัย</th><th>ผลลัพธ์</th><th>ใช้สนับสนุนอะไร</th></tr></thead>
+        <tbody>
+          <tr><td>Belpaeme et al. (2018) — Science Robotics Q1</td><td>หุ่นจริง > หุ่นเสมือน (d=0.69-0.70)</td><td>หุ่นมีอารมณ์เพิ่มแรงจูงใจ</td></tr>
+          <tr><td>Goulart et al. (2019) — Sensors Q1</td><td>Facial Landmark Ratios จำแนกอารมณ์ได้</td><td>วิธี METO ใกล้เคียงที่สุดแต่ทำบน PC → เราทำบน ESP32</td></tr>
+          <tr><td>Montuori et al. (2023) — Computers & Education Q1</td><td>Coding ช่วยแก้ปัญหา (d=0.89)</td><td>Tangible coding ดีกว่าแค่หน้าจอ</td></tr>
+          <tr><td>VanLehn (2011)</td><td>ITS แบบ step-by-step ≈ ติวเตอร์จริง</td><td>Scaffolding AI Tutor มีประสิทธิภาพ</td></tr>
+          <tr><td>Bennett & Šabanović (2014) — IJSR Q1</td><td>แค่ตา+ปาก เพียงพอสื่ออารมณ์</td><td>ดีไซน์ตาบน TFT เล็กก็ได้ผล</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📐 Hyperparameters สำคัญ (ค่าที่ตั้ง)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Parameter</th><th>ค่า</th><th>เหตุผล</th></tr></thead>
+        <tbody>
+          <tr><td>EMA α</td><td>0.5</td><td>สมดุลระหว่างตอบเร็ว vs กรอง noise</td></tr>
+          <tr><td>Baseline Rate</td><td>0.003</td><td>ปรับช้าพอไม่ถูกรบกวนจากอารมณ์ชั่วคราว</td></tr>
+          <tr><td>Consecutive Frames</td><td>2</td><td>ป้องกันเปลี่ยนจาก noise เฟรมเดียว</td></tr>
+          <tr><td>Camera Hold Time</td><td>500ms</td><td>ไม่ส่งอารมณ์ถี่เกินไป</td></tr>
+          <tr><td>Main Hold Time</td><td>2,000ms</td><td>แสดงอารมณ์อย่างน้อย 2s ดูเป็นธรรมชาติ</td></tr>
+          <tr><td>Servo Lerp Speed</td><td>0.18</td><td>หัวหมุน smooth ไม่กระตุก</td></tr>
+          <tr><td>Image Resolution</td><td>240×240px</td><td>ขนาดที่ ESP-DL รองรับ</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION 8: IP TYPES ==================== -->
+<section id="ip-types" class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(52,211,153,0.15);color:var(--green)">🛡️</div>
+    <h2>ประเภท IP ที่ควรจด</h2>
+    <span class="badge" style="background:var(--green-glow);color:var(--green)">IP Types</span>
+  </div>
+
+  <div class="card">
+    <h3>📋 แนะนำ 3 ประเภทที่เหมาะ</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ประเภท IP</th><th>จดอะไร</th><th>หมายเหตุ</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:var(--orange)">อนุสิทธิบัตร</strong><br><span style="font-size:.7rem;color:var(--text3)">Petty Patent</span></td>
+            <td>
+              <ul style="margin:0;padding-left:16px">
+                <li>กลไกโครงสร้างปิ่นโตซ้อนชั้น</li>
+                <li>กลไกแขนหนีบแบบมนุษย์ 2 ข้าง</li>
+                <li>S-Curve arm path หลบตัว</li>
+              </ul>
+            </td>
+            <td>เน้น "กลไก" การทำงาน<br>อายุคุ้มครอง 6+2+2 ปี</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--pink)">สิทธิบัตรการออกแบบ</strong><br><span style="font-size:.7rem;color:var(--text3)">Design Patent</span></td>
+            <td>
+              <ul style="margin:0;padding-left:16px">
+                <li>รูปทรงภายนอกของหุ่นยนต์ METO</li>
+                <li>ดีไซน์หน้าตา/ตัวถังที่ออกแบบเอง</li>
+              </ul>
+            </td>
+            <td>เน้น "รูปร่างหน้าตา"<br>อายุคุ้มครอง 10 ปี</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--accent)">ลิขสิทธิ์</strong><br><span style="font-size:.7rem;color:var(--text3)">Copyright</span></td>
+            <td>
+              <ul style="margin:0;padding-left:16px">
+                <li>Integration Code (ส่วนที่เชื่อมต่อ Web↔Robot↔AI)</li>
+                <li>UI Design ของหน้าเว็บ</li>
+                <li>Scaffolding System Prompt (7 กฎ)</li>
+              </ul>
+            </td>
+            <td>⚠️ ต้องคุยกับ สวนพ. เรื่อง AI เขียนโค้ด<br>อาจจดได้เฉพาะส่วนที่เราเขียนเอง</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📝 เรื่องสัดส่วนผู้ประดิษฐ์</h3>
+    <div class="highlight warn">
+      <strong>⚠️ ต้องคุยกับอาจารย์ก่อนประชุม!</strong> ตกลงสัดส่วนเปอร์เซ็นต์ (เช่น นักศึกษา 80% อาจารย์ 20%) ให้เรียบร้อยก่อนเข้าประชุมกับ สวนพ.
+    </div>
+    <ul>
+      <li>คุณ = คิด วางแผน ออกแบบ ทำฮาร์ดแวร์ ออกแบบลอจิก ตรวจโค้ด ทั้งหมด</li>
+      <li>อาจารย์ = ที่ปรึกษา เมนเทอร์ อัปเดตความก้าวหน้า</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>📅 สถานะการเผยแพร่</h3>
+    <div class="highlight success">
+      <strong>✅ ข่าวดี:</strong> ผลงานยังมีสถานะ "ความใหม่" — ยังไม่ถูกเผยแพร่ต่อสาธารณะ
+    </div>
+    <ul>
+      <li><strong>เว็บ:</strong> เสร็จแล้ว ✅</li>
+      <li><strong>ต้นแบบที่ 1:</strong> เสร็จแล้ว ✅</li>
+      <li><strong>ต้นแบบที่ 2:</strong> กำลังทำอยู่ 🔄</li>
+      <li><strong>ทดสอบกับกลุ่มเป้าหมาย:</strong> แผนเดือน 9-10 ⏳</li>
+    </ul>
+    <p>⏰ ต้องยื่นจด IP <strong>ก่อน</strong>เอาไปทดสอบ/เผยแพร่!</p>
+  </div>
+</section>
+
+<!-- ==================== SECTION 9: Q&A ==================== -->
+<section id="qa" class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(248,113,113,0.15);color:var(--red)">❓</div>
+    <h2>คำถามที่ สวนพ. จะถาม + คำตอบ</h2>
+    <span class="badge" style="background:rgba(248,113,113,0.15);color:var(--red)">Q&A</span>
+  </div>
+
+  <div class="card">
+    <h3 class="collapsible" onclick="toggleCollapse(this)">❓ Q1: ระบบทำงานอย่างไร Step-by-step?</h3>
+    <div class="collapse-body">
+      <div class="highlight success">
+        <strong>✅ คำตอบ:</strong> เปิดเว็บ → ลากบล็อกคำสั่ง (เช่น forward, หน้ายิ้ม, ยกแขน) → กด Run → เว็บแปลงเป็น string คำสั่ง (เช่น "w;h;r;") → ส่ง HTTP GET ผ่าน WiFi ไปยังหุ่น → ESP32 parse แล้วทำทีละคำสั่ง (ขับมอเตอร์, หมุน servo, วาดตา TFT)
+      </div>
+      <p><strong>เสริม:</strong> ระหว่างใช้งาน กล้องบนหัวหุ่น (XIAO ESP32S3) จะตรวจจับใบหน้าผู้ใช้แล้วจำแนกอารมณ์ ส่ง Serial ไปยัง ESP32 หลัก → หุ่นแสดงอารมณ์ตอบกลับทันที</p>
+      <p><strong>แนะนำ:</strong> เปิดหน้าเว็บ share screen ให้ดู + จำลองการลากบล็อกสดๆ</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="collapsible" onclick="toggleCollapse(this)">❓ Q2: งานนี้ต่างจากที่มีในตลาดอย่างไร (Research Gap)?</h3>
+    <div class="collapse-body">
+      <div class="highlight success">
+        <strong>✅ คำตอบ:</strong> หุ่นยนต์การศึกษาในตลาด (LEGO, mBot, Edison) เป็นแค่ "เครื่องรับคำสั่ง" — ไม่มีอารมณ์ ไม่มี AI สอน ไม่มีชีวิต นักเรียนแค่สั่ง แต่ไม่มีแรงจูงใจเรียนต่อ
+      </div>
+      <p><strong>METO ต่างตรงที่:</strong></p>
+      <ol>
+        <li>มี <strong>ปฏิสัมพันธ์ทางอารมณ์</strong> — ตรวจจับอารมณ์คน + แสดงอารมณ์ตอบ 9 แบบ (งานวิจัย Belpaeme et al. ยืนยัน เพิ่มแรงจูงใจ d=0.69-0.70)</li>
+        <li>มี <strong>AI Tutor แบบ Scaffolding</strong> — ให้คำใบ้ไม่ให้คำตอบ</li>
+        <li><strong>ประกอบแบบปิ่นโต</strong> — ถอดเพิ่มลดชั้นได้ นักเรียนเข้าใจ engineering</li>
+        <li>ราคาต่ำกว่า 3,000 บาท (ถูกกว่า LEGO 5 เท่า)</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="collapsible" onclick="toggleCollapse(this)">❓ Q3: มีการใช้ Open Source หรือ API ของคนอื่นไหม?</h3>
+    <div class="collapse-body">
+      <div class="highlight success">
+        <strong>✅ คำตอบ:</strong> ใช้ครับ — Google Blockly (UI บล็อก), ESP-DL (ตรวจจับใบหน้า), Gemini API (AI สอน), TFT_eSPI (ขับจอ) — ทั้งหมดเป็น open source / API ที่ใช้ได้เสรี
+      </div>
+      <p><strong>แต่ส่วนที่เป็นของเรา:</strong></p>
+      <ul>
+        <li>ฮาร์ดแวร์ทั้งหมด — ออกแบบ 3D + print + ประกอบเอง 100%</li>
+        <li>ตรรกะการทำงาน — Emotion Pipeline, Body-Face Coordination, Idle Behaviors, Smart Gripper</li>
+        <li>สถาปัตยกรรมการเชื่อมต่อ — Web ↔ Robot ↔ Camera ↔ AI ทั้งระบบ</li>
+        <li>โค้ดส่วนใหญ่ใช้ AI ช่วยเขียน (Vibe Coding) — แต่ตรรกะและการออกแบบเป็นของเรา</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="collapsible" onclick="toggleCollapse(this)">❓ Q4: ส่วนไหนคือหัวใจหลักของงาน?</h3>
+    <div class="collapse-body">
+      <div class="highlight success">
+        <strong>✅ คำตอบ:</strong> หัวใจคือ "ทั้งระบบ" ที่ผสมผสานกัน — ไม่มีตัวไหนในตลาดที่รวม DIY + Block Coding + Emotion AI + AI Tutor ในตัวเดียว ราคาถูก
+      </div>
+      <p><strong>แต่ถ้าต้องเลือก เน้นที่:</strong></p>
+      <ol>
+        <li><strong>ฮาร์ดแวร์</strong> — โครงสร้างปิ่นโต + แขนแบบมนุษย์ (จดอนุสิทธิบัตร + สิทธิบัตรออกแบบ)</li>
+        <li><strong>Emotion Pipeline</strong> — EMA + Hysteresis + Adaptive Baseline บน Edge AI (จดอนุสิทธิบัตร)</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="collapsible" onclick="toggleCollapse(this)">❓ Q5: สถานะโปรเจกต์ตอนนี้เป็นยังไง?</h3>
+    <div class="collapse-body">
+      <div class="highlight success">
+        <strong>✅ คำตอบ:</strong> เว็บเสร็จแล้ว ต้นแบบที่ 1 เสร็จ กำลังทำต้นแบบที่ 2 จะนำไปทดสอบจริงช่วงเดือน 9-10
+      </div>
+      <p><strong>สำคัญ:</strong> ยังไม่มีการเผยแพร่สาธารณะ → สถานะ "ความใหม่" ยังอยู่ → ต้องยื่นจด IP ก่อนเอาไปทดสอบ</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="collapsible" onclick="toggleCollapse(this)">❓ Q6: (ถ้าถาม) โค้ดใครเขียน?</h3>
+    <div class="collapse-body">
+      <div class="highlight warn">
+        <strong>⚠️ ตอบตามจริง:</strong> โค้ดส่วนใหญ่ใช้ AI (Gemini/Claude) เป็นผู้ช่วยเขียน — เราเป็นคนคิดลอจิก ออกแบบวิธีแก้ปัญหา ตรวจสอบ และควบคุมทั้งหมด
+      </div>
+      <p><strong>เปรียบเทียบ:</strong> เหมือนสถาปนิกใช้ CAD วาดแบบ — ผลงานการออกแบบยังเป็นของสถาปนิก ไม่ใช่ของโปรแกรม CAD</p>
+      <p><strong>จุดแข็ง:</strong> ฮาร์ดแวร์ 100% ทำเอง → จดสิทธิบัตรได้เต็มที่ ไม่เกี่ยวกับ AI เขียนโค้ด</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION 10: CHECKLIST ==================== -->
+<section id="checklist" class="section">
+  <div class="section-header">
+    <div class="section-icon" style="background:var(--accent-glow);color:var(--accent)">✅</div>
+    <h2>Checklist ก่อนประชุม</h2>
+    <span class="badge" style="background:var(--accent-glow);color:var(--accent)">Checklist</span>
+  </div>
+
+  <div class="card">
+    <h3>📋 ก่อนวันอังคาร</h3>
+    <ul style="list-style:none;padding:0">
+      <li>☐ คุยกับอาจารย์เรื่อง <strong>สัดส่วนผู้ประดิษฐ์</strong> (เปอร์เซ็นต์)</li>
+      <li>☐ เตรียม <strong>ภาพ/screenshot</strong> โมเดล 3D หุ่นยนต์แต่ละชั้น</li>
+      <li>☐ เตรียม <strong>screenshot หน้าเว็บ</strong> Block Coding</li>
+      <li>☐ เตรียม <strong>รูปถ่ายหุ่น</strong>ต้นแบบจริงหลายมุม</li>
+      <li>☐ ทบทวน <strong>จุดเด่น 5 ข้อ</strong> จาก Section 7</li>
+      <li>☐ ทบทวน <strong>คำตอบ Q1-Q6</strong> จาก Section 9</li>
+      <li>☐ เช็คว่า <strong>เว็บ Block Coding ใช้งานได้</strong> (เปิด share screen ได้)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>💻 เปิดไว้ตอนประชุม (Share Screen)</h3>
+    <ul style="list-style:none;padding:0">
+      <li>☐ เว็บ Block Coding → จำลองการลากบล็อก</li>
+      <li>☐ โปรแกรม 3D / ภาพโมเดลหุ่นยนต์</li>
+      <li>☐ <strong>เว็บนี้</strong> (IP Prep) → เปิดดูเป็น reference</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>📁 ไฟล์พร้อมส่ง (ถ้าเจ้าหน้าที่ขอ)</h3>
+    <ul style="list-style:none;padding:0">
+      <li>☐ ภาพหุ่นยนต์ต้นแบบหลายมุม (.jpg/.png)</li>
+      <li>☐ Screenshot หน้าเว็บ + Chat AI</li>
+      <li>☐ ไฟล์ 3D model (.stl/.step)</li>
+      <li>☐ เอกสารสรุประบบ (ส่งลิงก์เว็บนี้ได้เลย)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🎯 ลำดับการนำเสนอ (แนะนำ)</h3>
+    <ol>
+      <li><strong>อาจารย์เปิดเรื่อง</strong> — ภาพรวมโครงการ วัตถุประสงค์</li>
+      <li><strong>เราอธิบายฮาร์ดแวร์</strong> — Share screen โมเดล 3D → ชี้โครงสร้างปิ่นโต แขน ล้อ</li>
+      <li><strong>เราอธิบายซอฟต์แวร์</strong> — Share screen เว็บ → จำลองลากบล็อก</li>
+      <li><strong>เราอธิบาย Emotion AI</strong> — กล้องจับอารมณ์ → หุ่นตอบ</li>
+      <li><strong>ตอบคำถาม สวนพ.</strong> — ดูคำตอบจาก Section 9</li>
+    </ol>
+  </div>
+
+  <div style="text-align:center;margin-top:32px;padding:24px;color:var(--text3);font-size:.8rem">
+    สร้างโดย AI — ข้อมูลจาก codebase + เอกสารวิจัยของโปรเจกต์ METO<br>
+    อัปเดตล่าสุด: มิถุนายน 2568
+  </div>
+</section>
+
+</main>
+
+<script>
+// Collapsible toggle
+function toggleCollapse(el){
+  el.classList.toggle('open');
+  const body=el.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// Active nav link on scroll
+const sections=document.querySelectorAll('.section');
+const navLinks=document.querySelectorAll('.nav-link');
+window.addEventListener('scroll',()=>{
+  let current='';
+  sections.forEach(s=>{if(window.scrollY>=s.offsetTop-120)current=s.id});
+  navLinks.forEach(l=>{l.classList.remove('active');if(l.getAttribute('href')==='#'+current)l.classList.add('active')});
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "robot_url": "http://MDTrobot.local",
+  "camera_url": "http://metocam.local:81/stream",
+  "camera_mode": "both",
+  "yolo_model": "yolov8n.pt",
+  "yolo_conf": 0.4,
+  "yolo_imgsz": 320,
+  "object_labels": [
+    "person",
+    "bottle",
+    "cup"
+  ],
+  "face_match_threshold": 0.363,
+  "greet_names": [],
+  "greet_cmd": "emo:H;emo:B;",
+  "greet_cooldown_s": 60,
+  "look_enable": true,
+  "look_period_s": 0.5,
+  "look_hfov_deg": 50.0,
+  "look_kp": 0.6,
+  "look_dead_frac": 0.08,
+  "look_limit_deg": 60.0,
+  "look_x_sign": 1,
+  "look_skip_if_robot_tracking": true,
+  "report_port": 8765,
+  "state_period_s": 0.5
+}

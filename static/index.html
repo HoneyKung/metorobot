@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <!-- ไม่ล็อก scale — เด็กสายตาสั้นบนแท็บเล็ตต้องซูมได้ -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>METO Robot</title>
+  <!-- Blockly + ฟอนต์ ฝังในเครื่อง (vendor/) — ไม่พึ่ง CDN/อินเทอร์เน็ต
+       เหมาะกับห้องที่เน็ตไม่เสถียร และเปิดไฟล์ตรงๆ ก็ทำงานครบ -->
+  <script src="/static/vendor/blockly.min.js?v=109"></script>
+  <script src="/static/vendor/javascript_compressed.js"></script>
+
+  <link rel="stylesheet" href="/static/style.css?v=109">
+  <link rel="stylesheet" href="/static/vendor/material-icons.css">
+  <link rel="stylesheet" href="/static/vendor/prompt.css?v=109">
+  <!-- ธีม B (เกม) — ต้องโหลดหลัง style.css เพื่อทับกฎของธีม A · ทำงานเฉพาะ body.mode-player -->
+  <link rel="stylesheet" href="/static/game-ui.css?v=109">
+  <!-- หน้าห้องของผู้สอน = ธีม A (ต้องโหลดหลัง game-ui.css) -->
+  <link rel="stylesheet" href="/static/owner.css?v=109">
+  <!-- เว็บรอบ 3: หน้าบ้าน สร้างห้อง ห้องทุกคนเท่ากัน ฉายรหัส (body.mode-w3) -->
+  <link rel="stylesheet" href="/static/web3.css?v=109">
+</head>
+
+<body>
+
+  <!-- Original Header (always visible) -->
+  <div id="header-container">
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <h2 id="logo-home" onclick="Router.navigate('#/workspace')" title="กลับหน้า Workspace" style="cursor:pointer;">METO Robot</h2>
+      <!-- กดที่ป้ายนี้ = ตรวจหาหุ่นใหม่ทันที ไม่ต้องรอจังหวะที่ถอยไปแล้ว
+           (คนเพิ่งเสียบหุ่นแล้วรอ 30 วินาทีจะนึกว่าเว็บพัง) -->
+      <div id="connection-status" role="button" tabindex="0"
+        title="ยังไม่ต่อหุ่นจริง ฝึกกับหุ่นจำลองบนจอได้เลย · มีหุ่นจริง? เปิดหุ่นแล้วต่อ Wi-Fi เดียวกัน แล้วกดตรงนี้เพื่อตรวจหาอีกครั้ง"
+        onclick="checkConnectionNow(); if (window.RobotSim) RobotSim.checkNow();"
+        style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.2); padding: 5px 12px; border-radius: 20px; cursor: pointer;">
+        <span id="status-dot"></span>
+        <span id="status-text" style="color: white; font-size: 14px; font-weight: bold;">หุ่นจำลอง (ฝึกบนจอได้เลย)</span>
+      </div>
+      <!-- ชื่อโปรเจกต์ (แก้ไขได้) + ปุ่มเริ่มงานใหม่ — สไตล์ Tinkercad -->
+      <div id="project-title-wrap">
+        <input id="project-title-input" type="text" placeholder="โปรเจกต์ยังไม่ได้บันทึก" maxlength="80"
+          autocomplete="off" title="คลิกเพื่อแก้ชื่อโปรเจกต์">
+        <button id="new-project-btn" onclick="ProjectStore.newProject()" title="เริ่มงานใหม่ (งานเดิมไม่ถูกเซฟทับ)">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9" />
+            <path d="M18 2v6M15 5h6" />
+          </svg>
+          <span>งานใหม่</span>
+        </button>
+      </div>
+    </div>
+    <!-- Auth buttons in header -->
+    <div id="header-right" style="display: flex; align-items: center; gap: 10px;">
+      <!-- Guest state -->
+      <div id="header-guest" class="header-auth-group">
+        <a href="#/workspace" class="header-btn nav-btn" data-route="#/workspace">Workspace</a>
+        <a href="#/dashboard" class="header-btn nav-btn" data-route="#/dashboard">Dashboard</a>
+        <button id="header-login-btn" class="header-btn" onclick="Auth.showLoginModal()">เข้าสู่ระบบ</button>
+      </div>
+      <!-- Logged-in state (hidden by default) -->
+      <div id="header-user" class="header-auth-group" style="display:none;">
+        <a href="#/workspace" class="header-btn nav-btn" data-route="#/workspace">Workspace</a>
+        <a href="#/dashboard" id="header-dashboard-btn" class="header-btn nav-btn" data-route="#/dashboard">Dashboard</a>
+        <span id="header-username" style="color:white; font-size:14px;"></span>
+        <button id="header-logout-btn" class="header-btn" onclick="Auth.logout()">ออกจากระบบ</button>
+      </div>
+      <button id="save-btn" onclick="ProjectStore.save()" title="บันทึกโปรเจกต์">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+          <path d="M17 21v-8H7v8" />
+          <path d="M7 3v5h8" />
+        </svg>
+        <span id="save-btn-text">บันทึก</span>
+      </button>
+      <!-- ปิดเสียง — ต้องมีในหน้านี้ ไม่ใช่แค่ในแดชบอร์ด
+           ผู้ดูแลคุมห้อง 40 เครื่องต้องสั่งปิดเสียงจากหน้าที่เด็กใช้จริงได้ -->
+      <button id="sfx-btn" class="header-btn" onclick="toggleSfx()" title="เปิด/ปิดเสียง" aria-label="เปิด/ปิดเสียง">
+        <i class="material-icons">volume_up</i>
+      </button>
+      <button id="run-btn" onclick="runCode()">Run</button>
+      <button id="stop-btn" onclick="stopRun()" title="หยุดโปรแกรม" style="display:none;">หยุด</button>
+
+      <!-- จอแคบ: ของที่ไม่พอที่ "ย้าย" เข้ามาในเมนูนี้ ไม่ใช่ "ซ่อนทิ้ง"
+           ย้ายตัวเดิมเข้ามาจริง ๆ (ไม่ได้สร้างสำเนา) id กับ onclick จึงยังเป็นตัวเดียวกัน
+           โค้ดที่อ้างถึงมันด้วย id ไม่ต้องแก้อะไรเลย -->
+      <button id="header-menu-btn" class="header-btn" onclick="HeaderMenu.toggle()"
+        title="เมนู" aria-label="เมนู" aria-expanded="false" style="display:none;">
+        <i class="material-icons">menu</i>
+      </button>
+    </div>
+
+    <div id="header-menu" class="hidden" role="menu" aria-label="เมนูส่วนที่เหลือ"></div>
+  </div>
+
+  <!-- Workspace (always visible, default view) -->
+  <div id="page-workspace" class="page">
+    <div id="blocklyDiv"></div>
+
+    <!-- Digital Twin — การ์ดเดียวที่เดิมของเวที (ไม่กินพื้นที่เพิ่ม)
+         จอใหญ่ = เวทีมุมมองด้านบน / จอเล็กซ้อนมุม = หน้าหุ่น — คลิกจอเล็กเพื่อสลับ -->
+    <div id="twin-panel">
+      <!-- ปุ่มย่อ/ขยาย — บนแท็บเล็ตการ์ดนี้บังพื้นที่ลากบล็อก เด็กต้องเก็บได้ -->
+      <button id="twin-toggle" onclick="toggleTwinPanel()" title="ย่อ/ขยายจอหุ่น" aria-label="ย่อ/ขยายจอหุ่น">
+        <i class="material-icons" id="twin-toggle-icon">unfold_less</i>
+        <span id="twin-toggle-label">หุ่น</span>
+      </button>
+      <button id="twin-idle-btn" class="twin-idle-btn is-on" type="button" onclick="toggleRobotIdle()" aria-pressed="true" title="เปิด/ปิดท่าไอเดิล (ขยับเองเมื่ออยู่นิ่ง)">ไอเดิล: เปิด</button>
+      <span id="twin-link-badge" class="twin-badge sim" title="ไม่พบหุ่นจริง แสดงผลจากการจำลองในเบราว์เซอร์ (SIM)">โหมดจำลอง</span>
+
+      <!-- เวทีจำลอง (หุ่นมองจากด้านบน) — canvas ใส่โดย robot-sim.js -->
+      <div id="stage-container" class="twin-view twin-big" title="เวทีจำลอง มุมมองด้านบน"></div>
+
+      <!-- จอหน้าหุ่น = digital twin ของจอ TFT — canvas ใส่โดย robot-sim.js -->
+      <div id="face-container" class="twin-view twin-pip" title="จอหน้าหุ่น คลิกเพื่อสลับเป็นจอใหญ่"></div>
+    </div>
+
+    <!-- แถบภารกิจ — เดิมเด็กกด "ลุยเลย" จากแดชบอร์ดแล้วมาเจอกระดานเปล่า
+         ไม่รู้ว่ากำลังทำภารกิจอะไร ต้องกดกลับไปกลับมาอ่านเอง
+         เช็กลิสต์ติ๊กเขียวเองตอนลากบล็อก — ไม่ต้องกด Run ก่อนถึงจะรู้ว่าใกล้แล้วหรือยัง -->
+    <div id="mission-bar" class="hidden" title="ลากเพื่อย้ายตำแหน่งได้">
+      <button id="mission-toggle" onclick="Mission.toggle()" title="ย่อ/กางภารกิจ" aria-label="ย่อ/กางภารกิจ">
+        <i class="material-icons" id="mission-toggle-icon">expand_less</i>
+      </button>
+      <!-- สถานะผู้เล่น — เลขสะสมที่ไม่มีวันหาย + ภารกิจประจำวัน
+           ไม่ใช้ streak รายวัน เพราะเด็กเรียนคาบเดียวต่อสัปดาห์ streak จะขาดตั้งแต่วันที่สอง
+           แล้วกลายเป็นการลงโทษแทนที่จะเป็นแรงจูงใจ -->
+      <div id="player-hud" style="display:none;">
+        <span id="hud-days" class="hud-item" title="จำนวนวันที่เคยเข้ามาเล่น ขึ้นอย่างเดียว ไม่มีวันลด"></span>
+        <span id="hud-quest" class="hud-item" title="ภารกิจประจำวัน"></span>
+      </div>
+      <div id="mission-head">
+        <!-- ไม่มีป้ายระดับ Sequential/If-Else/Loop — ผู้ดูแลเขียนภารกิจเองทั้งหมด
+             ไม่ได้แบ่งบทเรียนเป็น 3 ระดับเสมอไป -->
+        <span id="mission-title"></span>
+      </div>
+      <div id="mission-body">
+        <div id="mission-desc"></div>
+        <ul id="mission-checks"></ul>
+        <div id="mission-nogoal" style="display:none;">ผู้ดูแลจะเป็นคนตรวจงานข้อนี้เอง ทำให้เต็มที่แล้วกดส่งงานได้เลย</div>
+        <div id="mission-actions">
+          <span id="mission-status" style="display:none;"></span>
+          <button id="mission-pick" class="mission-btn" onclick="Mission.showPicker()">เปลี่ยนภารกิจ</button>
+          <button id="mission-submit" class="mission-btn mission-btn-primary" style="display:none;" onclick="Mission.submit()">ส่งงานนี้</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gaming Chat UI (Livestream Style) -->
+    <div id="chat-messages"></div>
+
+    <!-- Chat input bar -->
+    <div id="chat-bar-container">
+      <div id="chat-input-area" class="chat-hidden">
+        <input type="text" id="chat-input" placeholder="ถามเมโต้..." autocomplete="off" />
+        <button id="chat-send-btn" onclick="sendChatMessage()">
+          <i class="material-icons">send</i>
+        </button>
+      </div>
+      <button id="chat-fab" onclick="toggleChat()" title="ช่วยเหลือ">
+        <canvas id="chat-fab-canvas" width="32" height="32"></canvas>
+      </button>
+    </div>
+
+    <!-- Custom Toolbar (Bottom-Right) -->
+    <div id="custom-toolbar">
+      <button id="btn-center" class="tool-btn" onclick="centerWorkspace()" title="Reset View">
+        <i class="material-icons">center_focus_strong</i>
+      </button>
+      <button id="btn-in" class="tool-btn" onclick="zoomIn()" title="Zoom In">
+        <i class="material-icons">add</i>
+      </button>
+      <button id="btn-out" class="tool-btn" onclick="zoomOut()" title="Zoom Out">
+        <i class="material-icons">remove</i>
+      </button>
+      <button id="btn-trash" class="tool-btn" onclick="deleteBlock()" title="Delete">
+        <i class="material-icons">delete</i>
+      </button>
+      <div class="toolbar-divider"></div>
+      <button id="btn-tutorial" class="tool-btn" onclick="Tutorial.start()" title="วิธีใช้งาน">
+        <i class="material-icons">help_outline</i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Page: Dashboard (hidden) -->
+  <div id="page-dashboard" class="page hidden">
+    <div class="dashboard-container">
+      <!-- เอาแถบ "กลับ Workspace / Dashboard" ออกแล้ว — ซ้ำกับปุ่ม Workspace บน header
+           และกินที่ด้านบนของทุกหน้าโดยไม่ได้ให้อะไรเพิ่ม -->
+      <div id="dashboard-content">
+        <div class="meto-load meto-load--page"><div class="meto-spin"></div><p>กำลังโหลดข้อมูล...</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth Modal (hidden) -->
+  <div id="auth-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-backdrop" onclick="Auth.closeModal()"></div>
+    <div class="modal-content">
+      <button class="modal-close" onclick="Auth.closeModal()">&times;</button>
+
+      <!-- Login Form -->
+      <div id="modal-login">
+        <h2 class="modal-title">เข้าสู่ระบบ</h2>
+        <form id="login-form" class="auth-form">
+          <div class="form-group">
+            <label for="login-username">ชื่อผู้ใช้</label>
+            <input type="text" id="login-username" placeholder="กรอกชื่อผู้ใช้" required autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label for="login-password">รหัสผ่าน</label>
+            <input type="password" id="login-password" placeholder="กรอกรหัสผ่าน" required autocomplete="current-password">
+          </div>
+          <div id="login-error" class="form-error" style="display:none;"></div>
+          <button type="submit" class="btn-primary btn-block">เข้าสู่ระบบ</button>
+        </form>
+        <div class="modal-footer">
+          <p>ยังไม่มีบัญชี? <a href="#" onclick="Auth.showRegisterForm(); return false;" class="link">สมัครสมาชิก</a></p>
+        </div>
+      </div>
+
+      <!-- Register Form (hidden) -->
+      <div id="modal-register" style="display:none;">
+        <h2 class="modal-title">สมัครสมาชิก</h2>
+        <form id="register-form" class="auth-form">
+          <!-- 9 พ.ย. 2569: บัญชีเดียว ไม่มีบทบาท · รหัสห้องอยู่บนสุด ใส่ไว้ = สมัครเสร็จเข้าห้องนั้นทันที -->
+          <div class="form-group">
+            <label for="reg-invite-code">รหัสห้อง <span class="form-hint">(ถ้ามี)</span></label>
+            <input type="text" id="reg-invite-code" placeholder="เช่น FRNK9M" autocomplete="off" maxlength="8" style="text-transform:uppercase">
+          </div>
+          <div class="form-group">
+            <label for="reg-display-name">ชื่อที่แสดง</label>
+            <input type="text" id="reg-display-name" placeholder="ชื่อที่คนอื่นในห้องจะเห็น เช่น ชื่อเล่น" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-username">ชื่อผู้ใช้ (ไว้เข้าสู่ระบบ)</label>
+            <input type="text" id="reg-username" placeholder="ภาษาอังกฤษหรือตัวเลข คนอื่นไม่เห็น" required autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label for="reg-password">รหัสผ่าน</label>
+            <input type="password" id="reg-password" placeholder="ตั้งรหัสผ่าน (6 ตัวขึ้นไป)" required autocomplete="new-password">
+          </div>
+          <div class="form-group">
+            <label for="reg-confirm">ยืนยันรหัสผ่าน</label>
+            <input type="password" id="reg-confirm" placeholder="กรอกรหัสผ่านอีกครั้ง" required autocomplete="new-password">
+          </div>
+          <div id="register-error" class="form-error" style="display:none;"></div>
+          <button type="submit" class="btn-primary btn-block">สมัคร</button>
+        </form>
+        <div class="modal-footer">
+          <p class="form-note">เก็บแค่ชื่อผู้ใช้ ชื่อที่แสดง และผลงานที่คุณบันทึก ไม่ขออีเมลหรือเบอร์โทร</p>
+          <p>มีบัญชีแล้ว? <a href="#" onclick="Auth.showLoginForm(); return false;" class="link">เข้าสู่ระบบ</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbox XML (at body level for Blockly) -->
+  <xml id="toolbox">
+    <!-- ตารางคำสั่ง: Robo/Part Robot/งานโค้ด_2026-11/รายงานเฟิร์มแวร์_วันศุกร์.md หัวข้อ 2
+         ช่องตัวเลขใช้ shadow num_* ที่จำกัดช่วงตามตาราง (นิยามที่ METO_RANGE ใน script.js)
+         บล็อกเซนเซอร์อยู่ในหมวดของอุปกรณ์นั้น ไม่เพิ่มหมวด/สีใหม่ (สีหมวดผูกกับรายงาน 3.3.4) -->
+    <category name="Motion" colour="#4C97FF">
+      <block type="move_forward"></block>
+      <block type="move_backward"></block>
+      <block type="turn_left"></block>
+      <block type="turn_right"></block>
+      <label text="Timed"></label>
+      <block type="move_timed">
+        <field name="DIR">fw</field>
+        <value name="MS"><shadow type="num_move_ms"><field name="NUM">1000</field></shadow></value>
+      </block>
+      <block type="turn_timed">
+        <field name="DIR">tl</field>
+        <value name="MS"><shadow type="num_move_ms"><field name="NUM">500</field></shadow></value>
+      </block>
+      <block type="move_stop"></block>
+      <label text="Return"></label>
+      <block type="motion_home"></block>
+      <block type="motion_back"></block>
+      <label text="Sensors"></label>
+      <block type="sensor_edge"></block>
+    </category>
+
+    <category name="Arm" colour="#9966FF">
+      <label text="Left Arm"></label>
+      <block type="arm_left_close"></block>
+      <block type="arm_left_normal"></block>
+      <block type="arm_left_open"></block>
+      <label text="Right Arm"></label>
+      <block type="arm_right_close"></block>
+      <block type="arm_right_normal"></block>
+      <block type="arm_right_open"></block>
+      <label text="By Degree"></label>
+      <block type="arm_lift">
+        <field name="SIDE">lift1</field>
+        <value name="DEG"><shadow type="num_lift"><field name="NUM">20</field></shadow></value>
+      </block>
+      <block type="arm_lift">
+        <field name="SIDE">lift</field>
+        <value name="DEG"><shadow type="num_lift"><field name="NUM">0</field></shadow></value>
+      </block>
+    </category>
+
+    <category name="Hand" colour="#CF63CF">
+      <!-- คำสั่ง 4/5/6 = มือซ้าย · 1/2/3 = มือขวา (ชื่อชนิดบล็อกเดิมสลับข้าง ดู script.js) -->
+      <label text="Left Hand"></label>
+      <block type="hand_right_up"></block>
+      <block type="hand_right_center"></block>
+      <block type="hand_right_down"></block>
+      <label text="Right Hand"></label>
+      <block type="hand_left_down"></block>
+      <block type="hand_left_center"></block>
+      <block type="hand_left_up"></block>
+      <label text="By %"></label>
+      <block type="hand_grip_pct">
+        <field name="SIDE">hand1</field>
+        <value name="PCT"><shadow type="num_pct"><field name="NUM">50</field></shadow></value>
+      </block>
+      <block type="hand_grip_pct">
+        <field name="SIDE">hand</field>
+        <value name="PCT"><shadow type="num_pct"><field name="NUM">100</field></shadow></value>
+      </block>
+    </category>
+
+    <category name="Head" colour="#FFBF00">
+      <block type="head_turn_right"></block>
+      <block type="head_center"></block>
+      <block type="head_turn_left"></block>
+      <label text="By Degree"></label>
+      <block type="head_yaw">
+        <value name="DEG"><shadow type="num_yaw"><field name="NUM">30</field></shadow></value>
+      </block>
+      <block type="head_tilt">
+        <value name="DEG"><shadow type="num_tilt"><field name="NUM">5</field></shadow></value>
+      </block>
+      <block type="head_speed">
+        <value name="SPEED"><shadow type="num_head_speed"><field name="NUM">90</field></shadow></value>
+      </block>
+      <label text="Sensor (Touch)"></label>
+      <block type="sensor_touch"></block>
+    </category>
+
+    <category name="Face" colour="#FF6680">
+      <block type="face_normal"></block>
+      <block type="face_look_left"></block>
+      <block type="face_look_right"></block>
+      <block type="face_happy"></block>
+      <block type="face_sad"></block>
+      <block type="face_angry"></block>
+      <block type="face_shocked"></block>
+      <block type="face_sleepy"></block>
+      <block type="face_confused"></block>
+      <block type="face_love"></block>
+      <block type="face_shy"></block>
+      <label text="Eyes + Gesture"></label>
+      <block type="face_emotion">
+        <field name="EMO">H</field>
+      </block>
+      <label text="Sensor (Camera)"></label>
+      <block type="sensor_face"></block>
+    </category>
+
+    <category name="Gripper" colour="#00B4AB">
+      <label text="Grip Control"></label>
+      <block type="grip_failback"></block>
+      <block type="grip_smart"></block>
+      <block type="grip_release"></block>
+      <block type="grip_verify"></block>
+      <label text="Custom Grip"></label>
+      <block type="grip_percent">
+        <value name="PCT"><shadow type="num_pct"><field name="NUM">70</field></shadow></value>
+      </block>
+      <label text="Sensors"></label>
+      <block type="sensor_object"></block>
+      <block type="sensor_holding"></block>
+      <block type="sensor_grab_ok"></block>
+    </category>
+
+    <category name="Control" colour="20">
+      <block type="start_program"></block>
+      <!-- เดิมไม่มี shadow ช่องว่างเปล่า เด็กต้องไปหาบล็อกตัวเลขมาเสียบเอง (ไม่เสียบ = รอ 0 วิ เงียบ ๆ) -->
+      <block type="delay_sec">
+        <value name="SEC">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="wait_one_sec"></block>
+      <block type="wait_ms">
+        <value name="MS"><shadow type="num_wait_ms"><field name="NUM">500</field></shadow></value>
+      </block>
+      <block type="controls_repeat_ext">
+        <value name="TIMES">
+          <shadow type="math_number">
+            <field name="NUM">10</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="controls_forever"></block>
+      <block type="controls_whileUntil">
+        <field name="MODE">WHILE</field>
+      </block>
+      <block type="controls_whileUntil">
+        <field name="MODE">UNTIL</field>
+      </block>
+      <block type="controls_if"></block>
+      <block type="controls_if">
+        <mutation else="1"></mutation>
+      </block>
+    </category>
+
+    <category name="Operator" colour="#59C059">
+      <block type="logic_compare"></block>
+      <block type="logic_operation"></block>
+      <block type="logic_negate"></block>
+      <block type="logic_boolean"></block>
+      <block type="math_number">
+        <field name="NUM">1</field>
+      </block>
+      <block type="math_arithmetic">
+        <value name="A">
+          <shadow type="math_number"><field name="NUM">1</field></shadow>
+        </value>
+        <value name="B">
+          <shadow type="math_number"><field name="NUM">1</field></shadow>
+        </value>
+      </block>
+      <block type="math_random_int">
+        <value name="FROM">
+          <shadow type="math_number"><field name="NUM">1</field></shadow>
+        </value>
+        <value name="TO">
+          <shadow type="math_number"><field name="NUM">10</field></shadow>
+        </value>
+      </block>
+    </category>
+
+    <category name="Variables" custom="VARIABLE" colour="#FF8C1A"></category>
+  </xml>
+
+  <!-- Scripts -->
+  <script src="/static/demo.js?v=109"></script>
+  <script src="/static/router.js?v=109"></script>
+  <script src="/static/auth.js?v=109"></script>
+  <script src="/static/sfx.js?v=109"></script>
+  <script src="/static/dashboard.js?v=109"></script>
+  <!-- ต่อยอด object Dashboard — ต้องโหลดหลัง dashboard.js เสมอ -->
+  <script src="/static/dashboard-hub.js?v=109"></script>
+  <script src="/static/dashboard-player.js?v=109"></script>
+  <script src="/static/dashboard-owner.js?v=109"></script>
+  <script src="/static/dashboard-w3.js?v=109"></script>
+  <script src="/static/tutorial.js?v=109"></script>
+  <script src="/static/robot-sim.js?v=109"></script>
+  <script src="/static/script.js?v=109"></script>
+
+</body>
+
+</html>

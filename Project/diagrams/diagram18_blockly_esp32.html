@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ภาพที่ 18 — Architecture เว็บ Blockly ↔ ESP32</title>
+    <style>
+        body {
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .mermaid {
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>ภาพที่ 18 — Architecture เว็บ Blockly ↔ ESP32</h2>
+        <div class="mermaid">
+            sequenceDiagram
+            participant U as ผู้เรียน
+            participant W as เว็บ Blockly
+            participant E as ESP32-S3
+
+            U->>W: ลากวางบล็อกคำสั่ง
+            U->>W: กดปุ่ม Run
+            W->>W: แปลงบล็อก → สตริง w,a,w,a
+            W->>E: HTTP GET /run?cmd=w,a,w,a
+            Note over E: Wi-Fi AP Mode SSID RobotMDT
+            E->>E: แยกคำสั่งทีละตัว
+            E->>E: สั่งมอเตอร์ + เซอร์โว + จอ
+            E-->>W: Response OK
+            W-->>U: แสดงสถานะ เสร็จแล้ว
+        </div>
+    </div>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            sequence: {
+                useMaxWidth: false,
+                width: 200,
+                height: 50,
+                boxMargin: 20,
+                mirrorActors: false,
+                messageMargin: 50,
+                noteMargin: 20
+            },
+            fontSize: 18
+        });
+    </script>
+</body>
+
+</html>

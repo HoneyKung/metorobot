@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: robomdt-ai-server
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    # อัปเกรดโครงสร้างฐานข้อมูล + ใส่ seed ให้เสร็จ "ก่อน" gunicorn จะแตก worker
+    # ถ้าปล่อยให้ทุก worker seed พร้อมกันจะแย่งกันแทรกแถวเดียวกัน
+    startCommand: flask db upgrade && flask seed-db && gunicorn server:app
+    envVars:
+      - key: FLASK_APP
+        value: server.py
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: robomdt-db
+          property: connectionString
+
+databases:
+  - name: robomdt-db
+    plan: free
+    databaseName: robomdt

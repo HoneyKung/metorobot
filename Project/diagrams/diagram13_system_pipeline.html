@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ภาพที่ 13 — System Pipeline</title>
+    <style>
+        body {
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .mermaid {
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>ภาพที่ 13 — Flowchart กระบวนการทำงานทั้งระบบ (System Pipeline)</h2>
+        <div class="mermaid">
+            flowchart LR
+            subgraph INPUT["Data Input"]
+            A1["กล้อง OV2640\nRGB565 240x240"]
+            A2["เว็บ Blockly\nบล็อกคำสั่ง"]
+            end
+
+            subgraph PREPROCESS["Preprocessing"]
+            B1["MSR01\nFace Detection\n→ Bounding Box"]
+            B2["MNP01\nLandmark Detection\n→ 5 Keypoints"]
+            B3["EMA Smoothing\nα = 0.5"]
+            B4["Baseline Calibration\nrate = 0.003"]
+            end
+
+            subgraph MODEL["Model Processing"]
+            C1["Ratio Calculation\nปาก / จมูก / มุม"]
+            C2["Hysteresis Filter\n2 เฟรม + 500ms"]
+            C3["Emotion FSM\n8 อารมณ์"]
+            C4["Block → String\nw;a;w;a;"]
+            end
+
+            subgraph OUTPUT["Output"]
+            D1["จอ TFT 2.8 นิ้ว\nวาดดวงตาอารมณ์"]
+            D2["เซอร์โว x 5\nท่าทางประกอบ"]
+            D3["มอเตอร์ DC x 2\nเคลื่อนที่"]
+            end
+
+            A1 --> B1 --> B2 --> B3 --> B4
+            B4 --> C1 --> C2 --> C3
+            C3 --> D1
+            C3 --> D2
+            A2 --> C4
+            C4 --> D2
+            C4 --> D3
+        </div>
+    </div>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true,
+                curve: 'basis',
+                nodeSpacing: 60,
+                rankSpacing: 80
+            },
+            fontSize: 16
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,83 @@
+========== front/Base (1) ==========
+front_Base.png
+
+========== front/Head (3) ==========
+front_Head_Left.png
+front_Head_Center.png
+front_Head_Right.png
+
+========== front/ArmLeft (9) ==========
+front_ArmLeft_Close_Down.png
+front_ArmLeft_Close_Center.png
+front_ArmLeft_Close_Up.png
+front_ArmLeft_Normal_Down.png
+front_ArmLeft_Normal_Center.png
+front_ArmLeft_Normal_Up.png
+front_ArmLeft_Open_Down.png
+front_ArmLeft_Open_Center.png
+front_ArmLeft_Open_Up.png
+
+========== front/ArmRight (9) ==========
+front_ArmRight_Close_Down.png
+front_ArmRight_Close_Center.png
+front_ArmRight_Close_Up.png
+front_ArmRight_Normal_Down.png
+front_ArmRight_Normal_Center.png
+front_ArmRight_Normal_Up.png
+front_ArmRight_Open_Down.png
+front_ArmRight_Open_Center.png
+front_ArmRight_Open_Up.png
+
+========== front/Face (10) ==========
+front_Face_LookLeft.png
+front_Face_LookRight.png
+front_Face_Happy.png
+front_Face_Sad.png
+front_Face_Angry.png
+front_Face_Shocked.png
+front_Face_Sleepy.png
+front_Face_Confused.png
+front_Face_Love.png
+front_Face_Shy.png
+
+========== back/Base (1) ==========
+back_Base.png
+
+========== back/Head (1) ==========
+back_Head.png
+
+========== back/ArmLeft (9) ==========
+back_ArmLeft_Close_Down.png
+back_ArmLeft_Close_Center.png
+back_ArmLeft_Close_Up.png
+back_ArmLeft_Normal_Down.png
+back_ArmLeft_Normal_Center.png
+back_ArmLeft_Normal_Up.png
+back_ArmLeft_Open_Down.png
+back_ArmLeft_Open_Center.png
+back_ArmLeft_Open_Up.png
+
+========== back/ArmRight (9) ==========
+back_ArmRight_Close_Down.png
+back_ArmRight_Close_Center.png
+back_ArmRight_Close_Up.png
+back_ArmRight_Normal_Down.png
+back_ArmRight_Normal_Center.png
+back_ArmRight_Normal_Up.png
+back_ArmRight_Open_Down.png
+back_ArmRight_Open_Center.png
+back_ArmRight_Open_Up.png
+
+========== side/Base (1) ==========
+side_Base.png
+
+========== side/Arm (9) ==========
+side_Arm_Close_Down.png
+side_Arm_Close_Center.png
+side_Arm_Close_Up.png
+side_Arm_Normal_Down.png
+side_Arm_Normal_Center.png
+side_Arm_Normal_Up.png
+side_Arm_Open_Down.png
+side_Arm_Open_Center.png
+side_Arm_Open_Up.png

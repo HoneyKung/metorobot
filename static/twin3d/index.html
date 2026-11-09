@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>METO ทวิน 3D</title>
+<style>
+  :root {
+    --bg: #12161d; --panel: rgba(22, 27, 36, 0.92); --line: #2c3442; --text: #e6ebf2; --muted: #93a0b4;
+    --accent: #ffb547; --ok: #5fd38d; --warn: #ff6b6b; --key: #2a3344;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
+    font-family: "Leelawadee UI", "Tahoma", "Noto Sans Thai", sans-serif; font-size: 14px; overflow: hidden; }
+  #view { position: fixed; inset: 0; }
+  .panel { position: fixed; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  #keys { left: 12px; top: 12px; width: 300px; max-height: calc(100% - 24px); overflow: auto; }
+  #side { right: 12px; top: 12px; width: 290px; max-height: calc(100% - 24px); overflow: auto; }
+  h1 { font-size: 16px; margin: 0 0 6px; }
+  h2 { font-size: 13px; margin: 10px 0 4px; color: var(--accent); font-weight: 600; }
+  table { border-collapse: collapse; width: 100%; }
+  td { padding: 2px 2px; vertical-align: middle; }
+  td.k { white-space: nowrap; width: 1%; padding-right: 8px; }
+  kbd { display: inline-block; min-width: 22px; text-align: center; padding: 1px 5px; margin: 1px 1px; border-radius: 4px;
+    background: var(--key); border: 1px solid #44506a; border-bottom-width: 2px; font-family: Consolas, monospace; font-size: 12px; }
+  kbd.on { background: var(--accent); color: #111; border-color: #c88a20; }
+  .row { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0; }
+  button { background: var(--key); color: var(--text); border: 1px solid #44506a; border-radius: 6px; padding: 4px 9px; cursor: pointer; font: inherit; font-size: 13px; }
+  button:hover { border-color: var(--accent); }
+  button.sel { background: var(--accent); color: #111; }
+  label { display: flex; align-items: center; gap: 6px; margin: 3px 0; cursor: pointer; }
+  input[type=text] { width: 100%; background: #0d1117; color: var(--text); border: 1px solid var(--line); border-radius: 5px; padding: 3px 6px; font: inherit; }
+  .j { display: grid; grid-template-columns: 78px 1fr 58px; gap: 6px; align-items: center; margin: 2px 0; font-size: 12.5px; }
+  .bar { position: relative; height: 8px; background: #0d1117; border-radius: 4px; overflow: hidden; }
+  .bar i { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--accent); }
+  .bar b { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: #44506a; }
+  .bar.blocked i { background: var(--warn); }
+  .v { text-align: right; font-family: Consolas, monospace; }
+  .muted { color: var(--muted); font-size: 12px; }
+  #toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); background: #3a1418; border: 1px solid var(--warn);
+    color: #ffd9d9; padding: 8px 16px; border-radius: 8px; font-size: 15px; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 90vw; text-align: center; }
+  #toast.show { opacity: 1; }
+  #toast.info { background: #13283a; border-color: #4aa3ff; color: #d9ecff; }
+  #loading { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; background: #ffffff; color: #333; z-index: 5; }
+  #real-status { font-size: 12px; margin-top: 4px; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #555; margin-right: 5px; }
+  .dot.ok { background: var(--ok); } .dot.bad { background: var(--warn); } .dot.wait { background: var(--accent); }
+  #hide-ui { position: fixed; left: 50%; top: 10px; transform: translateX(-50%); }
+  body.min #keys, body.min #side { display: none; }
+  @media (max-width: 900px) { #keys { width: 240px; font-size: 12px; } #side { width: 240px; } }
+</style>
+<script type="importmap">
+{ "imports": {
+    "three": "../vendor/three/three.module.js",
+    "three/addons/": "../vendor/three/"
+} }
+</script>
+</head>
+<body>
+<div id="view"></div>
+<div id="loading">กำลังโหลดชิ้นส่วนหุ่น…</div>
+
+<div id="keys" class="panel">
+  <h1>METO ทวิน 3D</h1>
+  <div class="muted">คลิกที่ฉากหนึ่งครั้งก่อนกดปุ่ม · ใช้ได้ทั้งแป้นไทย/อังกฤษ</div>
+  <h2>เดิน</h2>
+  <table>
+    <tr><td class="k"><kbd data-k="KeyW">W</kbd><kbd data-k="KeyS">S</kbd></td><td>เดินหน้า / ถอย</td></tr>
+    <tr><td class="k"><kbd data-k="KeyA">A</kbd><kbd data-k="KeyD">D</kbd></td><td>เลี้ยวซ้าย / ขวา</td></tr>
+    <tr><td class="k"><kbd data-k="Space">Space</kbd></td><td>หยุดทุกอย่าง</td></tr>
+  </table>
+  <h2>แขนและมือ (กดค้าง)</h2>
+  <table>
+    <tr><td class="k"><kbd data-k="KeyQ">Q</kbd><kbd data-k="KeyZ">Z</kbd></td><td>แขนซ้าย ยก / ลด</td></tr>
+    <tr><td class="k"><kbd data-k="KeyE">E</kbd><kbd data-k="KeyC">C</kbd></td><td>แขนขวา ยก / ลด</td></tr>
+    <tr><td class="k"><kbd data-k="KeyF">F</kbd><kbd data-k="KeyV">V</kbd></td><td>มือซ้าย หนีบ / กาง</td></tr>
+    <tr><td class="k"><kbd data-k="KeyG">G</kbd><kbd data-k="KeyB">B</kbd></td><td>มือขวา หนีบ / กาง</td></tr>
+  </table>
+  <h2>หัว (กดค้าง)</h2>
+  <table>
+    <tr><td class="k"><kbd data-k="ArrowLeft">←</kbd><kbd data-k="ArrowRight">→</kbd></td><td>หันซ้าย / ขวา</td></tr>
+    <tr><td class="k"><kbd data-k="ArrowUp">↑</kbd><kbd data-k="ArrowDown">↓</kbd></td><td>เงย / ก้ม</td></tr>
+  </table>
+  <h2>อื่น ๆ</h2>
+  <table>
+    <tr><td class="k"><kbd data-k="KeyR">R</kbd></td><td>ท่าเริ่มต้น R (แขนลง หัวตรง)</td></tr>
+    <tr><td class="k"><kbd data-k="Home">Home</kbd></td><td>พาหุ่นกลับกลางพื้น (เฉพาะจอ)</td></tr>
+    <tr><td class="k"><kbd data-k="KeyX">X</kbd></td><td>สลับเปลือก ทึบ / โปร่ง / ซ่อน</td></tr>
+    <tr><td class="k"><kbd data-k="KeyT">T</kbd><kbd data-k="KeyY">Y</kbd><kbd data-k="KeyU">U</kbd></td><td>มุมกล้อง หน้า / ข้าง / บน</td></tr>
+  </table>
+  <h2>อารมณ์ (หน้าจอ + ท่าทาง)</h2>
+  <table id="emo-table"></table>
+  <div class="muted">กดเลข 1–9 = เปลี่ยนอารมณ์ + เล่นท่าแขน/หัวพร้อมกัน (ท่าเดียวกับเฟิร์มแวร์ meto_emotes.h)</div>
+  <h2>แตะทองแดงบนหัว (แผ่นเดียว)</h2>
+  <div class="row">
+    <button data-touch="1">แตะ (สุ่ม 5 ท่า)</button><button data-touch="2">แตะสองที</button><button data-touch="3">ลูบ 2 วิ</button>
+  </div>
+  <h2>ท่าตามเหตุการณ์</h2>
+  <div class="row">
+    <button data-ev="lift">ยกของสำเร็จ</button><button data-ev="cliff">เจอขอบตก</button><button data-ev="done">โค้ดจบ</button>
+  </div>
+  <div class="row">
+    <button data-ev="bug">เจอบัค</button><button data-ev="noobj">หนีบไม่เจอของ</button><button id="idle-now">ไอเดิลเลย</button>
+  </div>
+  <label><input type="checkbox" id="idle-on" checked> ไอเดิลเอง (ว่าง 15–30 วิ เล่นท่าสุ่ม ไม่หมุนล้อ)</label>
+  <label><input type="checkbox" id="face-sim"> จำลองหน้าคน (หัวหันตาม · สบตา 2–3 วิ แล้วเขิน)</label>
+  <div class="muted" id="face-info"></div>
+  <div class="muted" id="gest-info">กดเลข 1–9 ซ้ำได้ ท่าจะสุ่มแบบใหม่ทุกครั้ง (อารมณ์ละ 3 แบบ)</div>
+</div>
+
+<div id="side" class="panel">
+  <h2 style="margin-top:0">มุมกล้อง</h2>
+  <div class="row">
+    <button data-view="front">หน้า</button><button data-view="side">ข้าง</button><button data-view="top">บน</button><button data-view="iso">เฉียง</button>
+  </div>
+  <label><input type="checkbox" id="follow" checked> กล้องตามหุ่น</label>
+  <div class="muted">ลากเมาส์ซ้าย = หมุน · ขวา = เลื่อน · ล้อ = ซูม</div>
+
+  <h2>การแสดงผล</h2>
+  <div class="row" id="shell-mode">
+    <span class="muted" style="align-self:center">เปลือก:</span>
+    <button data-shell="solid" class="sel">ทึบ</button><button data-shell="ghost">โปร่ง</button><button data-shell="hide">ซ่อน</button>
+  </div>
+  <label><input type="checkbox" id="show-dev" checked> แสดงอุปกรณ์ภายใน (เซอร์โว บอร์ด แบต)</label>
+  <div class="row muted" id="legend"></div>
+
+  <h2>ของสวมหัว</h2>
+  <div class="row" id="hat-mode">
+    <button data-hat="none" class="sel">ไม่ใส่</button><button data-hat="cat">หูแมว</button><button data-hat="bear">หูหมี</button><button data-hat="ant">หนวดมด</button><button data-hat="straw">หมวกฟาง</button>
+  </div>
+
+  <h2>วัตถุทดลองหนีบ</h2>
+  <div class="row">
+    <button data-obj="none" class="sel">ไม่มี</button><button data-obj="glass">แก้ว</button><button data-obj="b350">ขวด 350</button><button data-obj="b600">ขวด 600</button><button data-obj="can">กระป๋อง</button>
+  </div>
+  <div class="row">
+    <button id="obj-place">วางใหม่</button><button id="obj-grip">หนีบ</button><button id="obj-lift">ยก (−17°)</button><button id="obj-open">ปล่อย</button>
+  </div>
+  <div class="muted" id="obj-info">เลือกวัตถุ แล้วกด หนีบ → ยก · เดิน W/S ได้ตอนหนีบอยู่</div>
+
+  <h2>ข้อต่อ (องศาเชิงกล)</h2>
+  <div id="joints"></div>
+  <div class="muted" id="drive-info"></div>
+
+  <h2>ระบบกันชน</h2>
+  <label><input type="checkbox" id="ilk-on" checked> เปิด interlock (ตารางเดียวกับเฟิร์มแวร์)</label>
+  <div class="muted" id="ilk-info">ตัดท่าแล้ว 0 ครั้ง</div>
+
+  <h2>โหมดคุมหุ่นจริง</h2>
+  <label><input type="checkbox" id="real-on"> ส่งคำสั่งไปหุ่นจริงด้วย</label>
+  <input type="text" id="real-host" value="http://MDTrobot.local" spellcheck="false">
+  <label><input type="checkbox" id="real-follow"> ให้โมเดลขยับตามหุ่นจริง (อ่าน /state)</label>
+  <div id="real-status"><span class="dot"></span><span id="real-text">ปิดอยู่</span></div>
+  <div class="muted" id="real-last"></div>
+</div>
+
+<button id="hide-ui" title="ซ่อน/แสดงแผง (H)">ซ่อนแผง</button>
+<div id="toast"></div>
+
+<script type="module" src="twin3d.js?v=12"></script>
+</body>
+</html>

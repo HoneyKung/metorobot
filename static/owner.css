@@ -1,0 +1,205 @@
+/* =====================================================================
+   หน้าห้องของผู้ดูแล (ครู) — ธีม A เครื่องมือ (8 พ.ย. 2569)
+   ---------------------------------------------------------------------
+   THEME.md ส่วนที่ 1: การ์ดขาว มุมโค้ง 12px เงานุ่ม ปุ่มแคปซูล ตัวหนังสือเข้มบนพื้นขาว
+   ครูไม่ใช้ธีมเกม — หน้านี้ใช้คลาส ow-* ของไฟล์นี้ทั้งหมด จึงไม่โดนกรอบพิกเซลของ game-ui.css
+   โหลดเป็นไฟล์สุดท้าย (หลัง game-ui.css) · ของใช้ร่วมทั้งเว็บ (แถบหัว snackbar) ไม่แตะ
+   ===================================================================== */
+body.mode-owner #page-dashboard,
+body.mode-owner .dashboard-container { background: #f8f9fc; }
+
+.ow-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 20px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    color: #333;
+}
+.ow-card {
+    background: #fff;
+    border: 1px solid #e8ecf4;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(58, 83, 164, 0.07);
+    padding: 20px 22px;
+}
+.ow-muted { color: #666; font-size: 13px; }
+.ow-title { margin: 0 0 4px; font-size: 26px; font-weight: 700; color: #3A53A4; }
+.ow-h2 { margin: 0; font-size: 18px; font-weight: 600; color: #333; border-left: 4px solid #3A53A4; padding-left: 12px; }
+
+/* กฎ button ทั่วเว็บตั้ง z-index: 100 ไว้ ปุ่มที่เป็นลูกของ flex จะลอยทับเมนู ⋯ ได้ */
+.ow-page button { z-index: auto; }
+
+/* ---- หัวห้อง ---- */
+.ow-head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; position: relative; z-index: 5; }
+.ow-head-main { flex: 1 1 260px; min-width: 0; }
+.ow-head-side { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ow-code {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #f0f4ff; border: 1px solid #dde3f0; border-radius: 20px; padding: 4px 6px 4px 14px;
+}
+.ow-code b { font-size: 18px; letter-spacing: 2px; color: #3A53A4; font-variant-numeric: tabular-nums; }
+.ow-code.is-closed b { color: #999; text-decoration: line-through; }
+.ow-note { flex-basis: 100%; background: #fff8e1; color: #8a5a00; border-radius: 8px; padding: 8px 12px; font-size: 13px; }
+
+/* ---- ปุ่ม (THEME.md 5.4) ---- */
+.ow-btn {
+    position: static; margin: 0;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    border-radius: 20px; padding: 8px 18px; font-size: 14px; font-weight: 500; line-height: 1.2;
+    border: 1px solid transparent; cursor: pointer; box-shadow: none; white-space: nowrap;
+    transition: filter 0.15s, transform 0.15s;
+}
+.ow-btn:hover:not(:disabled) { filter: brightness(0.95); transform: translateY(-1px); }
+.ow-btn:disabled { opacity: 0.45; cursor: default; }
+.ow-btn-sm { padding: 5px 14px; font-size: 13px; }
+.ow-btn-primary { background: #3A53A4; color: #fff; }
+.ow-btn-secondary { background: #f0f4ff; color: #3A53A4; border-color: #dde3f0; }
+.ow-btn-ghost { background: transparent; color: #3A53A4; }
+.ow-btn-ghost:hover:not(:disabled) { background: #f0f4ff; }
+.ow-danger { color: #d32f2f; }
+
+/* ---- เมนู ⋯ ---- */
+.ow-menu { position: relative; }
+.ow-menu-btn { font-size: 20px; padding: 4px 12px; letter-spacing: 1px; }
+.ow-menu-list {
+    position: absolute; right: 0; top: calc(100% + 6px); z-index: 50;
+    min-width: 220px; background: #fff; border: 1px solid #e8ecf4; border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(58, 83, 164, 0.12); padding: 6px;
+    display: flex; flex-direction: column;
+}
+.ow-menu-list[hidden] { display: none; }
+.ow-menu-list button {
+    position: static; margin: 0; text-align: left; background: none; border: none; box-shadow: none;
+    border-radius: 8px; padding: 9px 12px; font-size: 14px; color: #333; cursor: pointer;
+}
+.ow-menu-list button:hover { background: #f0f4ff; color: #3A53A4; }
+
+/* ---- รอตรวจ / ควรเข้าไปดู ---- */
+.ow-now { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.ow-now-card { display: flex; align-items: center; gap: 16px; }
+.ow-now-num {
+    flex: 0 0 auto; width: 56px; height: 56px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 700; background: #f0f0f0; color: #888;
+}
+.ow-now-card.is-todo .ow-now-num { background: #3A53A4; color: #fff; }
+.ow-now-card.is-watch .ow-now-num { background: #fff8e1; color: #f57f17; }
+.ow-now-body { flex: 1; min-width: 0; }
+.ow-now-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.ow-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+/* ---- ชิป (THEME.md 5.5) ---- */
+.ow-chip {
+    position: static; margin: 0; display: inline-flex; align-items: center;
+    border-radius: 20px; padding: 2px 10px; font-size: 12px; font-weight: 500;
+    background: #f0f4ff; color: #3A53A4; border: none; box-shadow: none;
+}
+button.ow-chip { cursor: pointer; }
+.ow-chip-warn { background: #fff8e1; color: #f57f17; }
+.ow-chip-todo { background: #3A53A4; color: #fff; }
+
+/* ---- ภารกิจ ---- */
+.ow-sec-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.ow-list { display: flex; flex-direction: column; }
+.ow-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid #e8ecf4; }
+.ow-row:first-child { border-top: none; padding-top: 0; }
+.ow-row-main { flex: 1; min-width: 0; }
+.ow-row-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+.ow-row-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.ow-row-actions { display: flex; gap: 6px; flex: 0 0 auto; }
+.ow-empty { color: #666; font-size: 14px; background: #f8f9fc; border: 1px dashed #dde3f0; border-radius: 8px; padding: 16px; text-align: center; }
+
+/* ---- ตารางสมาชิก ---- */
+.ow-table-wrap { overflow-x: auto; }
+.ow-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.ow-table th { text-align: left; font-weight: 600; color: #666; font-size: 12px; padding: 0 10px 8px; white-space: nowrap; }
+.ow-table td { padding: 10px; border-top: 1px solid #e8ecf4; vertical-align: middle; }
+.ow-table tbody tr { cursor: pointer; }
+.ow-table tbody tr:hover td { background: #f0f4ff; }
+.ow-sort { position: static; margin: 0; background: none; border: none; box-shadow: none; padding: 0; font: inherit; color: inherit; cursor: pointer; }
+.ow-sort.is-on { color: #3A53A4; }
+.ow-name { font-weight: 500; }
+.ow-table td:nth-child(3), .ow-table td:nth-child(5) { white-space: nowrap; }
+body.mode-owner .ow-table .focus-chip { white-space: nowrap; }
+body.mode-owner .ow-no {
+    width: 44px; height: auto; margin: 0; border: 1px solid #dde3f0; border-radius: 8px;
+    padding: 3px 6px; font-size: 13px; text-align: center; box-shadow: none; background: #fff;
+}
+body.mode-owner .ow-no:focus { border-color: #3A53A4; box-shadow: 0 0 0 3px rgba(58, 83, 164, 0.1); outline: none; }
+.ow-bar { display: inline-block; width: 70px; height: 8px; border-radius: 4px; background: #e8ecf4; vertical-align: middle; margin-right: 6px; overflow: hidden; }
+.ow-bar span { display: block; height: 100%; background: linear-gradient(90deg, #4CAF50, #80C781); }
+
+/* ---- ภาพรวมทักษะ (พับไว้) ---- */
+.ow-fold summary { cursor: pointer; font-size: 16px; font-weight: 600; color: #3A53A4; }
+.ow-fold[open] summary { margin-bottom: 12px; }
+.ow-fold .dashboard-section { all: unset; display: block; }
+
+/* ---- หน้าต่าง (modal) ของหน้าครู — ธีม A ไม่ใช่กรอบพิกเซล ---- */
+body.mode-owner .modal-content {
+    background: #fff;
+    border: none;
+    border-image: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    image-rendering: auto;
+}
+body.mode-owner .modal-content .empty-state,
+body.mode-owner .modal-content .notice-box,
+body.mode-owner #assign-task-area .assign-goal-box,
+body.mode-owner .ow-fold .empty-state {
+    border: 1px solid #e8ecf4; border-image: none; border-radius: 8px; background: #f8f9fc; box-shadow: none;
+}
+
+@media (max-width: 760px) {
+    .ow-page { padding: 12px 12px 40px; gap: 12px; }
+    .ow-now { grid-template-columns: 1fr; }
+    .ow-row { flex-direction: column; align-items: stretch; }
+    .ow-row-actions { justify-content: flex-end; }
+    .ow-title { font-size: 22px; }
+}
+
+/* ---- ปุ่ม/ช่องกรอกของฟังก์ชันเดิมที่เปิดในหน้าครู (หน้าต่างตรวจงาน ฟอร์มมอบภารกิจ) → ธีม A ---- */
+body.mode-owner .modal-content .btn-primary,
+body.mode-owner .modal-content .btn-submit,
+body.mode-owner .ow-page .btn-primary,
+body.mode-owner .ow-page .btn-submit {
+    position: static; background: #3A53A4; color: #fff; border: none; border-radius: 20px;
+    padding: 7px 16px; font-weight: 500; box-shadow: none; clip-path: none;
+}
+body.mode-owner .modal-content .project-btn,
+body.mode-owner .ow-page .project-btn,
+body.mode-owner .ow-page .btn-add,
+body.mode-owner .modal-content .btn-add {
+    position: static; background: #f0f4ff; color: #3A53A4; border: 1px solid #dde3f0; border-radius: 20px;
+    padding: 5px 14px; box-shadow: none; clip-path: none;
+}
+body.mode-owner .modal-content .project-btn-danger { background: #fff; color: #d32f2f; border-color: #f0c4c4; }
+body.mode-owner .modal-content input[type="text"],
+body.mode-owner .modal-content input[type="number"],
+body.mode-owner .modal-content input[type="date"],
+body.mode-owner .modal-content input[type="datetime-local"],
+body.mode-owner .modal-content select,
+body.mode-owner .modal-content textarea,
+body.mode-owner .ow-page #assign-task-area input,
+body.mode-owner .ow-page #assign-task-area select,
+body.mode-owner .ow-page #assign-task-area textarea {
+    border: 1px solid #dde3f0; border-radius: 8px; box-shadow: none; background: #fff; font-family: inherit;
+}
+body.mode-owner .modal-content input:focus,
+body.mode-owner .modal-content select:focus,
+body.mode-owner .modal-content textarea:focus,
+body.mode-owner .ow-page #assign-task-area input:focus,
+body.mode-owner .ow-page #assign-task-area select:focus,
+body.mode-owner .ow-page #assign-task-area textarea:focus {
+    border-color: #3A53A4; box-shadow: 0 0 0 3px rgba(58, 83, 164, 0.1); outline: none;
+}
+body.mode-owner .modal-content .due-chip,
+body.mode-owner .modal-content .grade-badge { border-radius: 20px; box-shadow: none; }
+body.mode-owner .modal-content table th { background: #f8f9fc; }
+/* ปุ่ม "ให้คะแนน" ในหน้าต่างตรวจงาน = ปุ่มหลักของหน้าต่างนั้น */
+body.mode-owner .modal-content .project-btn[onclick*="gradeSubmission"] { background: #3A53A4; color: #fff; border-color: #3A53A4; }
+/* คอลัมน์ "ตอนนี้" (9 พ.ย. 2569) */
+.ow-live { color: #2e7d32; font-weight: 600; }
+.ow-live::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2fbf4a; margin-right: 6px; vertical-align: 1px; }

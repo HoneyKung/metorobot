@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoboMDT Arm Collision Simulator</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a1a;color:#e0e0e0;font-family:'Segoe UI',sans-serif;display:flex;height:100vh;overflow:hidden}
+#sidebar{width:320px;background:#12122a;padding:20px;overflow-y:auto;border-right:1px solid #2a2a4a}
+#sidebar h1{font-size:18px;color:#7eb8ff;margin-bottom:4px}
+#sidebar p.sub{font-size:11px;color:#888;margin-bottom:16px}
+.group{margin-bottom:14px;background:#1a1a35;padding:12px;border-radius:8px}
+.group h3{font-size:12px;color:#aaa;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}
+.ctrl{margin-bottom:8px}
+.ctrl label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:2px}
+.ctrl label span{color:#7eb8ff;font-weight:bold}
+.ctrl input[type=range]{width:100%;accent-color:#7eb8ff;height:6px}
+.status{padding:8px 12px;border-radius:6px;font-size:13px;font-weight:bold;text-align:center;margin-bottom:10px}
+.ok{background:#1a3a1a;color:#4f4;border:1px solid #2a5a2a}
+.warn{background:#3a3a1a;color:#ff4;border:1px solid #5a5a2a}
+.hit{background:#3a1a1a;color:#f44;border:1px solid #5a2a2a}
+canvas{flex:1;display:block}
+.legend{font-size:10px;color:#666;margin-top:12px;line-height:1.6}
+.legend b{color:#aaa}
+.info-box{background:#0d1b2a;border:1px solid #1b3a5a;border-radius:6px;padding:8px;margin-bottom:10px;font-size:11px;line-height:1.5;color:#8ab4d8}
+</style>
+</head>
+<body>
+<div id="sidebar">
+  <h1>🦾 RoboMDT Arm Simulator</h1>
+  <p class="sub">จำลองแขน S-Curve — ทดสอบ Collision</p>
+  <div id="statusBox" class="status ok">✅ ไม่ชน</div>
+  <div class="info-box">
+    ⚙️ ขนาดจริง: ตัว 96mm, หัว ~120mm, แขน 100mm<br>
+    🔴 สีแดง = โซนชน | 🟢 สีเขียว = ปลอดภัย
+  </div>
+
+  <div class="group">
+    <h3>🔧 MG996R — ยกแขน</h3>
+    <div class="ctrl"><label>มุมยก (ซ้าย) <span id="vArmL">30°</span></label>
+    <input type="range" id="armL" min="-30" max="150" value="30"></div>
+    <div class="ctrl"><label>มุมยก (ขวา) <span id="vArmR">30°</span></label>
+    <input type="range" id="armR" min="-30" max="150" value="30"></div>
+  </div>
+
+  <div class="group">
+    <h3>🤏 MG90S — หุบเข้า/ออก</h3>
+    <div class="ctrl"><label>หุบ (ซ้าย) <span id="vHandL">0°</span></label>
+    <input type="range" id="handL" min="0" max="90" value="0"></div>
+    <div class="ctrl"><label>หุบ (ขวา) <span id="vHandR">0°</span></label>
+    <input type="range" id="handR" min="0" max="90" value="0"></div>
+  </div>
+
+  <div class="group">
+    <h3>〰️ S-Curve Offset</h3>
+    <div class="ctrl"><label>โค้งออกด้านข้าง <span id="vCurve">0 mm</span></label>
+    <input type="range" id="curve" min="0" max="30" value="0"></div>
+    <div class="ctrl"><label>จุดเริ่มโค้ง (จากไหล่) <span id="vCurveStart">15 mm</span></label>
+    <input type="range" id="curveStart" min="5" max="40" value="15"></div>
+    <div class="ctrl"><label>ความยาวส่วนโค้ง <span id="vCurveLen">30 mm</span></label>
+    <input type="range" id="curveLen" min="10" max="60" value="30"></div>
+  </div>
+
+  <div class="group">
+    <h3>📏 ปรับขนาด</h3>
+    <div class="ctrl"><label>ความยาวแขน <span id="vArmLen">100 mm</span></label>
+    <input type="range" id="armLen" min="60" max="140" value="100"></div>
+    <div class="ctrl"><label>ความกว้างหัว <span id="vHeadW">120 mm</span></label>
+    <input type="range" id="headW" min="80" max="140" value="120"></div>
+    <div class="ctrl"><label>ความสูงหัว <span id="vHeadH">35 mm</span></label>
+    <input type="range" id="headH" min="25" max="50" value="35"></div>
+  </div>
+
+  <div class="legend">
+    <b>วิธีใช้:</b><br>
+    • ลองเลื่อน "มุมยก" ขึ้นสุด แล้วเลื่อน "หุบ" เข้า<br>
+    • สังเกตว่าแขนตรง (curve=0) ชนหัว/ตัว<br>
+    • เพิ่ม S-Curve offset ดูว่าโค้งเท่าไหร่ถึงหลบได้<br>
+    • สีแดงกะพริบ = กำลังชน!
+  </div>
+</div>
+<canvas id="c"></canvas>
+
+<script>
+const $ = id => document.getElementById(id);
+const canvas = $('c'), ctx = canvas.getContext('2d');
+let W, H, scale, cx, cy;
+
+// Robot dimensions in mm (from user data)
+const BODY_W = 96, BODY_WALL = 5;
+const FLOOR = [29, 24, 35, 39]; // heights of floors 1-4
+const BODY_H = FLOOR.reduce((a,b)=>a+b,0); // 127
+const WHEEL_H = 50, WHEEL_OUT = 25;
+const TRACK_W = BODY_W + WHEEL_OUT*2; // ~146
+const NECK_H = 10; // top of floor 4 is neck area
+const SHOULDER_TO_HEAD = 28;
+
+function resize(){
+  canvas.width = W = canvas.clientWidth * devicePixelRatio;
+  canvas.height = H = canvas.clientHeight * devicePixelRatio;
+  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  W /= devicePixelRatio; H /= devicePixelRatio;
+  scale = Math.min(W/300, H/350) * 0.8;
+  cx = W/2; cy = H*0.6;
+}
+
+function getVal(id){ return +$(id).value; }
+
+function mmToPx(mm){ return mm * scale; }
+
+// Generate S-curve arm path (returns array of {x,y} in mm, relative to shoulder pivot)
+function getArmPath(armAngle, handAngle, curveOff, curveStart, curveLength, armLength, side){
+  // side: -1 = left, 1 = right
+  // armAngle: 0=horizontal out, 90=straight down, negative=up
+  // We build the arm shape in arm-local coords then rotate
+
+  const points = [];
+  const steps = 40;
+  const totalLen = armLength;
+
+  for(let i=0; i<=steps; i++){
+    const t = i/steps;
+    const along = t * totalLen; // distance along arm
+    let lateral = 0; // offset outward
+
+    // S-curve: starts at curveStart, peaks at curveStart+curveLength/2, returns at curveStart+curveLength
+    const cEnd = curveStart + curveLength;
+    if(along >= curveStart && along <= cEnd && curveOff > 0){
+      const ct = (along - curveStart) / curveLength;
+      lateral = curveOff * Math.sin(ct * Math.PI); // smooth bulge out
+    }
+
+    points.push({along, lateral});
+  }
+
+  // Now rotate the whole arm by armAngle around shoulder
+  // arm hangs: 0° = straight down from shoulder
+  // armAngle from user: 30° default = slightly out
+  // Convert: actual rotation from straight-down
+  const rad = (-(armAngle - 90)) * Math.PI / 180; // 90°=down, 0°=horizontal
+
+  // handAngle rotates the lower portion inward
+  // We apply inward rotation to the whole arm for simplicity (pivot at top)
+  const handRad = handAngle * Math.PI / 180 * (-side); // inward
+
+  const result = [];
+  for(const p of points){
+    // In arm local: x = lateral (outward = side direction), y = along (downward)
+    let lx = p.lateral * side; // outward
+    let ly = p.along;
+
+    // Rotate by arm lift angle (around shoulder, in the front-view plane)
+    const cosA = Math.cos(rad), sinA = Math.sin(rad);
+    let rx = lx * cosA - ly * sinA;
+    let ry = lx * sinA + ly * cosA;
+
+    // Apply hand inward rotation (around shoulder top for simplicity)
+    const cosH = Math.cos(handRad), sinH = Math.sin(handRad);
+    let fx = rx * cosH - ry * sinH;
+    let fy = rx * sinH + ry * cosH;
+
+    result.push({x: fx, y: fy});
+  }
+
+  return result;
+}
+
+function checkCollision(path, side, headW, headH){
+  const bodyHalfW = (BODY_W + BODY_WALL*2) / 2;
+  const headHalfW = headW / 2;
+  // Shoulder is at top of floor 4, slightly inward
+  // Head bottom is SHOULDER_TO_HEAD above shoulder
+  // Head top is SHOULDER_TO_HEAD + headH above shoulder
+
+  for(const p of path){
+    const absX = Math.abs(p.x + side * (bodyHalfW)); // absolute x from center
+    const worldY = p.y; // positive = down from shoulder
+
+    // Check body collision (center box)
+    if(absX < bodyHalfW && worldY > -10 && worldY < BODY_H * 0.6){
+      return 'body';
+    }
+
+    // Check head collision
+    const headBottom = -SHOULDER_TO_HEAD;
+    const headTop = headBottom - headH;
+    if(absX < headHalfW && worldY < headBottom && worldY > headTop){
+      return 'head';
+    }
+  }
+  return null;
+}
+
+let frame = 0;
+function draw(){
+  frame++;
+  ctx.clearRect(0,0,W,H);
+
+  const armL_angle = getVal('armL');
+  const armR_angle = getVal('armR');
+  const handL_angle = getVal('handL');
+  const handR_angle = getVal('handR');
+  const curveOff = getVal('curve');
+  const curveStart = getVal('curveStart');
+  const curveLength = getVal('curveLen');
+  const armLength = getVal('armLen');
+  const headW = getVal('headW');
+  const headH = getVal('headH');
+
+  // Update labels
+  $('vArmL').textContent = armL_angle + '°';
+  $('vArmR').textContent = armR_angle + '°';
+  $('vHandL').textContent = handL_angle + '°';
+  $('vHandR').textContent = handR_angle + '°';
+  $('vCurve').textContent = curveOff + ' mm';
+  $('vCurveStart').textContent = curveStart + ' mm';
+  $('vCurveLen').textContent = curveLength + ' mm';
+  $('vArmLen').textContent = armLength + ' mm';
+  $('vHeadW').textContent = headW + ' mm';
+  $('vHeadH').textContent = headH + ' mm';
+
+  // Origin = shoulder pivot position (center-left or center-right)
+  const bodyHalfW = (BODY_W + BODY_WALL*2) / 2;
+  const shoulderY = cy - mmToPx(FLOOR[3] - NECK_H); // shoulder height on screen
+
+  ctx.save();
+  ctx.translate(cx, shoulderY);
+
+  // Draw grid
+  ctx.strokeStyle = '#1a1a3a';
+  ctx.lineWidth = 0.5;
+  for(let i = -150; i <= 150; i += 10){
+    ctx.beginPath();
+    ctx.moveTo(mmToPx(i), mmToPx(-100));
+    ctx.lineTo(mmToPx(i), mmToPx(150));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(mmToPx(-150), mmToPx(i));
+    ctx.lineTo(mmToPx(150), mmToPx(i));
+    ctx.stroke();
+  }
+
+  // Draw wheels/tracks
+  const trackY = mmToPx(FLOOR[0]+FLOOR[1]+FLOOR[2]+FLOOR[3]-FLOOR[3]+NECK_H);
+  const floorBase = mmToPx(FLOOR[1]+FLOOR[2]+FLOOR[3]-FLOOR[3]+NECK_H);
+
+  // Floor positions relative to shoulder
+  const f4top = -mmToPx(FLOOR[3] - NECK_H); // top of floor 4 (neck area)
+  const f4bot = mmToPx(NECK_H); // bottom of floor 4
+  const f3bot = f4bot + mmToPx(FLOOR[2]); // bottom of floor 3 (top of floor 2... wait)
+
+  // Let me recalculate. Shoulder is near top of floor 4.
+  // Below shoulder: rest of floor 4, then floor 3, floor 2, floor 1
+  const below4 = mmToPx(NECK_H); // remaining floor 4 below shoulder
+  const belowAll = mmToPx(NECK_H + FLOOR[2] + FLOOR[1] + FLOOR[0]);
+
+  // Draw body (floors 1-4)
+  // Floor 4
+  ctx.fillStyle = '#2a2a45';
+  ctx.fillRect(-mmToPx(bodyHalfW), -mmToPx(FLOOR[3]-NECK_H), mmToPx(BODY_W+BODY_WALL*2), mmToPx(FLOOR[3]));
+  ctx.strokeStyle = '#4a4a6a';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(-mmToPx(bodyHalfW), -mmToPx(FLOOR[3]-NECK_H), mmToPx(BODY_W+BODY_WALL*2), mmToPx(FLOOR[3]));
+
+  // Floor 3
+  const f3y = mmToPx(NECK_H);
+  ctx.fillStyle = '#252540';
+  ctx.fillRect(-mmToPx(bodyHalfW), f3y, mmToPx(BODY_W+BODY_WALL*2), mmToPx(FLOOR[2]));
+  ctx.strokeRect(-mmToPx(bodyHalfW), f3y, mmToPx(BODY_W+BODY_WALL*2), mmToPx(FLOOR[2]));
+
+  // Floor 2
+  const f2y = f3y + mmToPx(FLOOR[2]);
+  ctx.fillStyle = '#20203a';
+  ctx.fillRect(-mmToPx(bodyHalfW), f2y, mmToPx(BODY_W+BODY_WALL*2), mmToPx(FLOOR[1]));
+  ctx.strokeRect(-mmToPx(bodyHalfW), f2y, mmToPx(BODY_W+BODY_WALL*2), mmToPx(FLOOR[1]));
+
+  // Floor 1
+  const f1y = f2y + mmToPx(FLOOR[1]);
+  ctx.fillStyle = '#1b1b32';
+  ctx.fillRect(-mmToPx(bodyHalfW), f1y, mmToPx(BODY_W+BODY_WALL*2), mmToPx(FLOOR[0]));
+  ctx.strokeRect(-mmToPx(bodyHalfW), f1y, mmToPx(BODY_W+BODY_WALL*2), mmToPx(FLOOR[0]));
+
+  // Floor labels
+  ctx.fillStyle = '#555';
+  ctx.font = `${9*scale}px monospace`;
+  const labelX = mmToPx(bodyHalfW + 3);
+  ctx.fillText('F4 (แขน)', labelX, -mmToPx(FLOOR[3]-NECK_H) + mmToPx(FLOOR[3]/2));
+  ctx.fillText('F3 (สมอง)', labelX, f3y + mmToPx(FLOOR[2]/2));
+  ctx.fillText('F2', labelX, f2y + mmToPx(FLOOR[1]/2));
+  ctx.fillText('F1', labelX, f1y + mmToPx(FLOOR[0]/2));
+
+  // Wheels
+  const wheelY = f1y + mmToPx(FLOOR[0]);
+  ctx.fillStyle = '#3a3a50';
+  // Left wheel
+  ctx.fillRect(-mmToPx(bodyHalfW + WHEEL_OUT), wheelY - mmToPx(WHEEL_H-FLOOR[0]), mmToPx(WHEEL_OUT), mmToPx(WHEEL_H));
+  // Right wheel
+  ctx.fillRect(mmToPx(bodyHalfW), wheelY - mmToPx(WHEEL_H-FLOOR[0]), mmToPx(WHEEL_OUT), mmToPx(WHEEL_H));
+
+  // Draw head
+  const headBottomY = -mmToPx(SHOULDER_TO_HEAD);
+  const headTopY = headBottomY - mmToPx(headH);
+  const headHalfWpx = mmToPx(headW/2);
+
+  // Head glow if collision
+  const pathL = getArmPath(armL_angle, handL_angle, curveOff, curveStart, curveLength, armLength, -1);
+  const pathR = getArmPath(armR_angle, handR_angle, curveOff, curveStart, curveLength, armLength, 1);
+  const collL = checkCollision(pathL, -1, headW, headH);
+  const collR = checkCollision(pathR, 1, headW, headH);
+  const anyCollision = collL || collR;
+
+  const flash = Math.sin(frame * 0.15) > 0;
+
+  // Head
+  ctx.fillStyle = anyCollision && flash ? '#4a2020' : '#2e2e50';
+  ctx.strokeStyle = anyCollision ? '#f44' : '#5a5a8a';
+  ctx.lineWidth = 2;
+  // Rounded head
+  const hr = mmToPx(8);
+  ctx.beginPath();
+  ctx.moveTo(-headHalfWpx + hr, headTopY);
+  ctx.lineTo(headHalfWpx - hr, headTopY);
+  ctx.quadraticCurveTo(headHalfWpx, headTopY, headHalfWpx, headTopY + hr);
+  ctx.lineTo(headHalfWpx, headBottomY);
+  ctx.lineTo(-headHalfWpx, headBottomY);
+  ctx.lineTo(-headHalfWpx, headTopY + hr);
+  ctx.quadraticCurveTo(-headHalfWpx, headTopY, -headHalfWpx + hr, headTopY);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Eyes
+  ctx.fillStyle = '#7eb8ff';
+  const eyeY = (headTopY + headBottomY)/2;
+  ctx.beginPath(); ctx.arc(-mmToPx(15), eyeY, mmToPx(6), 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(mmToPx(15), eyeY, mmToPx(6), 0, Math.PI*2); ctx.fill();
+
+  // Neck line
+  ctx.strokeStyle = '#4a4a6a';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(-mmToPx(10), headBottomY);
+  ctx.lineTo(-mmToPx(10), -mmToPx(FLOOR[3]-NECK_H));
+  ctx.moveTo(mmToPx(10), headBottomY);
+  ctx.lineTo(mmToPx(10), -mmToPx(FLOOR[3]-NECK_H));
+  ctx.stroke();
+
+  // Shoulder pivot points
+  const shoulderLx = -mmToPx(bodyHalfW);
+  const shoulderRx = mmToPx(bodyHalfW);
+  ctx.fillStyle = '#ff6b35';
+  ctx.beginPath(); ctx.arc(shoulderLx, 0, mmToPx(4), 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(shoulderRx, 0, mmToPx(4), 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.font = `${7*scale}px sans-serif`;
+  ctx.fillText('MG996R', shoulderLx - mmToPx(20), mmToPx(8));
+
+  // Draw arms
+  function drawArm(path, pivotX, collision, side){
+    // Arm outline
+    ctx.beginPath();
+    ctx.moveTo(pivotX + mmToPx(path[0].x), mmToPx(path[0].y));
+    for(let i=1; i<path.length; i++){
+      ctx.lineTo(pivotX + mmToPx(path[i].x), mmToPx(path[i].y));
+    }
+    ctx.strokeStyle = collision ? '#ff4444' : '#44ff88';
+    ctx.lineWidth = mmToPx(8);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.globalAlpha = 0.3;
+    ctx.stroke();
+
+    // Arm center line
+    ctx.beginPath();
+    ctx.moveTo(pivotX + mmToPx(path[0].x), mmToPx(path[0].y));
+    for(let i=1; i<path.length; i++){
+      ctx.lineTo(pivotX + mmToPx(path[i].x), mmToPx(path[i].y));
+    }
+    ctx.strokeStyle = collision ? '#ff6666' : '#66ffaa';
+    ctx.lineWidth = mmToPx(3);
+    ctx.globalAlpha = 1;
+    ctx.stroke();
+
+    // Gripper at end
+    const last = path[path.length-1];
+    const endX = pivotX + mmToPx(last.x);
+    const endY = mmToPx(last.y);
+    ctx.fillStyle = collision ? '#f44' : '#4f8';
+    ctx.beginPath(); ctx.arc(endX, endY, mmToPx(5), 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#000';
+    ctx.font = `${6*scale}px sans-serif`;
+    ctx.fillText('มือ', endX - mmToPx(4), endY + mmToPx(2));
+
+    // MG90S pivot marker (at top of arm)
+    ctx.fillStyle = '#ffcc00';
+    ctx.beginPath(); ctx.arc(pivotX + mmToPx(path[0].x), mmToPx(path[0].y), mmToPx(3), 0, Math.PI*2); ctx.fill();
+  }
+
+  drawArm(pathL, shoulderLx, collL, -1);
+  drawArm(pathR, shoulderRx, collR, 1);
+
+  // Max width line (track width)
+  ctx.setLineDash([4,4]);
+  ctx.strokeStyle = '#444';
+  ctx.lineWidth = 1;
+  const tw = mmToPx(TRACK_W/2);
+  ctx.beginPath(); ctx.moveTo(-tw, -mmToPx(80)); ctx.lineTo(-tw, wheelY+mmToPx(10)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(tw, -mmToPx(80)); ctx.lineTo(tw, wheelY+mmToPx(10)); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#444';
+  ctx.fillText('← ขอบล้อ', -tw - mmToPx(25), wheelY + mmToPx(15));
+  ctx.fillText('ขอบล้อ →', tw + mmToPx(2), wheelY + mmToPx(15));
+
+  // Dimension annotation - total width
+  ctx.fillStyle = '#666';
+  ctx.font = `${8*scale}px monospace`;
+  ctx.fillText(`ตัว ${BODY_W+BODY_WALL*2}mm`, -mmToPx(20), f1y + mmToPx(FLOOR[0] + 12));
+  ctx.fillText(`รวมล้อ ~${TRACK_W}mm`, -mmToPx(25), f1y + mmToPx(FLOOR[0] + 22));
+
+  ctx.restore();
+
+  // Update status
+  const sb = $('statusBox');
+  if(anyCollision){
+    const what = (collL||collR) === 'head' ? 'หัว' : 'ลำตัว';
+    sb.textContent = `❌ ชน${what}! ${collL ? '(ซ้าย)' : ''} ${collR ? '(ขวา)' : ''}`;
+    sb.className = 'status hit';
+  } else {
+    // Check if close
+    sb.textContent = '✅ ไม่ชน — ปลอดภัย';
+    sb.className = 'status ok';
+  }
+
+  requestAnimationFrame(draw);
+}
+
+window.addEventListener('resize', resize);
+resize();
+draw();
+</script>
+</body>
+</html>

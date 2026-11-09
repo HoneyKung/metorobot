@@ -1,0 +1,10 @@
+color([0.28, 0.52, 0.78]) translate([0, 0, 0]) import("C:/Users/Acer/.gemini/antigravity-cli/brain/439861cf-048a-417c-86a7-bd8760da3416/scratch/stl_stage/layer1.stl");
+color([0.22, 0.24, 0.28]) translate([-62, -95, 12]) rotate([0, 90, 0]) import("C:/Users/Acer/.gemini/antigravity-cli/brain/439861cf-048a-417c-86a7-bd8760da3416/scratch/stl_stage/wheel.stl");
+color([0.22, 0.24, 0.28]) translate([62, -95, 12]) rotate([0, -90, 0]) import("C:/Users/Acer/.gemini/antigravity-cli/brain/439861cf-048a-417c-86a7-bd8760da3416/scratch/stl_stage/wheel.stl");
+color([0.32, 0.62, 0.48]) translate([0, 0, 48]) import("C:/Users/Acer/.gemini/antigravity-cli/brain/439861cf-048a-417c-86a7-bd8760da3416/scratch/stl_stage/layer2.stl");
+color([0.42, 0.48, 0.78]) translate([0, 0, 90]) import("C:/Users/Acer/.gemini/antigravity-cli/brain/439861cf-048a-417c-86a7-bd8760da3416/scratch/stl_stage/layer3.stl");
+color([0.78, 0.45, 0.32]) translate([0, 0, 142]) import("C:/Users/Acer/.gemini/antigravity-cli/brain/439861cf-048a-417c-86a7-bd8760da3416/scratch/stl_stage/layer4.stl");
+color([0.35, 0.62, 0.85]) translate([-30, 10, 142]) import("C:/Users/Acer/.gemini/antigravity-cli/brain/439861cf-048a-417c-86a7-bd8760da3416/scratch/stl_stage/arm_L_r3.stl");
+color([0.35, 0.62, 0.85]) translate([30, 10, 142]) import("C:/Users/Acer/.gemini/antigravity-cli/brain/439861cf-048a-417c-86a7-bd8760da3416/scratch/stl_stage/arm_R_r3.stl");
+color([0.38, 0.64, 0.72]) translate([0, 0, 185]) import("C:/Users/Acer/.gemini/antigravity-cli/brain/439861cf-048a-417c-86a7-bd8760da3416/scratch/stl_stage/neck.stl");
+color([0.92, 0.86, 0.72]) translate([0, -51.5, 275]) rotate([180, 0, 0]) import("C:/Users/Acer/.gemini/antigravity-cli/brain/439861cf-048a-417c-86a7-bd8760da3416/scratch/stl_stage/shell.stl");

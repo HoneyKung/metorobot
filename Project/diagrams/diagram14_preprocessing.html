@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ภาพที่ 14 — Preprocessing Pipeline</title>
+    <style>
+        body {
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .mermaid {
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>ภาพที่ 14 — Preprocessing Pipeline (ก่อน/หลัง)</h2>
+        <div class="mermaid">
+            flowchart LR
+            A["ภาพดิบ\n240x240\nRGB565"] -->|MSR01| B["Bounding Box\nรอบใบหน้า"]
+            B -->|MNP01| C["5 Keypoints\nตาL ตาR จมูก\nปากL ปากR"]
+            C -->|"EMA α=0.5"| D["Smoothed\nKeypoints"]
+            D -->|"Baseline 0.003"| E["Ratio\nCalculation"]
+            E --> F["อารมณ์\nH/S/A/O/Z/C/V/N"]
+        </div>
+    </div>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: { useMaxWidth: false, htmlLabels: true, nodeSpacing: 60, rankSpacing: 80 },
+            fontSize: 16
+        });
+    </script>
+</body>
+
+</html>

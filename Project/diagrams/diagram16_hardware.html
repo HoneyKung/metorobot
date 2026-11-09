@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ภาพที่ 16 — Block Diagram ฮาร์ดแวร์</title>
+    <style>
+        body {
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .mermaid {
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>ภาพที่ 16 — Block Diagram การเชื่อมต่อฮาร์ดแวร์</h2>
+        <div class="mermaid">
+            flowchart TB
+            ESP32S3["ESP32-S3\nบอร์ดหลัก\nWi-Fi AP Mode"]
+
+            CAM["ESP32-CAM\nOV2640\nESP-DL"]
+            TFT["จอ TFT 2.8 นิ้ว\nILI9341 - SPI\nแสดงตาอารมณ์"]
+            SERVO["Servo x 5\nHand1 Hand2\nArm1 Arm2 Head"]
+            L298N["L298N\nMotor Driver"]
+            MOTOR["DC Motor x 2\n+ ล้อ"]
+            IR["IR Sensor x 2\nเดินตามเส้น"]
+            WEB["เว็บเบราว์เซอร์\nBlockly"]
+
+            CAM -->|"Serial2\nH/S/A/O/Z/C/V/N"| ESP32S3
+            ESP32S3 -->|SPI| TFT
+            ESP32S3 -->|"PWM Pin\n32,33,25,26,27"| SERVO
+            ESP32S3 -->|"GPIO\n13,12,14,21"| L298N
+            L298N --> MOTOR
+            ESP32S3 -->|"GPIO 15,34"| IR
+            WEB -->|"Wi-Fi HTTP\n/run?cmd=..."| ESP32S3
+        </div>
+    </div>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: { useMaxWidth: false, htmlLabels: true, nodeSpacing: 60, rankSpacing: 80 },
+            fontSize: 16
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ภาพที่ 19 — Architecture LLM API</title>
+    <style>
+        body {
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .mermaid {
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>ภาพที่ 19 — Architecture LLM API (AI ผู้ช่วยสอน)</h2>
+        <div class="mermaid">
+            sequenceDiagram
+            participant U as ผู้เรียน
+            participant W as เว็บ Blockly
+            participant C as Cloud Server - Node.js
+            participant G as Gemini API - Google
+
+            U->>W: พิมพ์คำถาม + ส่งโค้ดบล็อก
+            W->>C: HTTPS POST question + code
+            Note over C: แนบ API Key + System Prompt<br />บทบาท ผู้ช่วยสอน<br />ห้ามเฉลย ใช้คำถามชี้แนะ
+            C->>G: HTTPS POST prompt + API Key
+            G->>G: ประมวลผลภาษา
+            G-->>C: JSON Response answer
+            C-->>W: ส่งคำตอบกลับ
+            W-->>U: แสดงคำตอบ AI บนหน้าเว็บ
+            Note over C: ซ่อน API Key + Rate Limiting
+        </div>
+    </div>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            sequence: {
+                useMaxWidth: false,
+                width: 200,
+                height: 50,
+                boxMargin: 20,
+                mirrorActors: false,
+                messageMargin: 50,
+                noteMargin: 20
+            },
+            fontSize: 18
+        });
+    </script>
+</body>
+
+</html>

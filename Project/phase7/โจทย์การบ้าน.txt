@@ -1,0 +1,38 @@
+การปรับปรุง Proposal สู่ Technical Specification 
+สิ่งที่คุณต้องทำในสัปดาห์นี้ คือการนำ การปรับปรุงเนื้อหาในรายงาน บทที่ 1-2 และบทที่ 3 สิ่งที่จะทำเดิม มาเจาะลึกรายละเอียดทางเทคนิค แทนที่ด้วยข้อมูลเชิงประจักษ์ เพื่อเตรียมพร้อมสำหรับการเขียน "บทที่ 3 วิธีการดำเนินการวิจัย" และการทำ "สไลด์นำเสนอ" ในสัปดาห์ถัดไป
+ขั้นตอนการทำงาน (Workflow)
+นำเอกสาร Proposal เดิมของกลุ่มมาทบทวนและปรับปรุงใหม่ให้กระชับ ระบุให้ชัดเจนว่า Input Data คืออะไร และ Expected Output ของระบบ AI คืออะไร
+ประเมินความเป็นไปได้ของ Proposal นั้น ด้วยการกรอก Feasibility Matrix ครบทั้ง 5 มิติ (Data, Model, Technical, Time, Risk) เพื่อยืนยันว่าโปรเจกต์นี้ทำได้จริงในเวลาที่กำหนด
+ค้นหา Pre-trained Model ที่เหมาะสมกับงานจาก Hugging Face หรือ PyTorch Hub
+ระบุ Library ที่จะใช้ (เช่น PyTorch) และตรวจสอบ Environment ว่าจะรันบน Google Colab, Kaggle หรือ Local GPU
+นำข้อมูลจากข้อ 1-4 มาเขียนเป็น "Technical Specification" ตามโครงสร้างด้านล่างนี้
+
+โครงสร้างเนื้อหา Technical Specification (สิ่งที่ต้องส่ง)
+ให้จัดทำเอกสารโดยแบ่งเป็น 4 ส่วนหลัก (บังคับใช้ฟีเจอร์ Styles ใน MS Word กำหนดหัวข้อหลักเป็น Heading)
+1. Project Overview (ภาพรวมโครงการที่ปรับปรุงแล้ว)
+Problem Statement ปัญหาที่ต้องการแก้คืออะไร? (ข้อมูลนี้เตรียมนำไปใช้สร้างภาพสถิติในสไลด์หน้า The Problem)
+Expected Output ผลลัพธ์ที่คาดหวังจากระบบ AI คืออะไร?
+2. Dataset Description (ข้อมูลที่จะใช้)  ระบุแหล่งที่มา (เช่น Kaggle, HuggingFace หรือเก็บข้อมูลเอง) จำนวนตัวอย่าง ประเภทไฟล์ ขนาดข้อมูล และ Data Distribution (สัดส่วน Class ต่างๆ) บอกรายละเอียดให้ครบ ขนาดของข้อมูล จำนวน แสดงตัวอย่าง คำอธิบาย
+(ข้อมูลส่วนนี้เตรียมนำไปใช้โชว์ภาพตัวอย่างชุดข้อมูล ในสไลด์หน้า Dataset & Preprocessing)
+3. Model Architecture (โมเดลที่เลือก และ การนำเสนอด้วยภาพ)
+ระบุประเภทโมเดลที่เลือก + เหตุผล (Pre-trained หรือ From Scratch?) พร้อมระบุ Hyperparameters เบื้องต้น (Epoch, LR, Batch Size)
+Model Architecture Diagram (บังคับ) สร้างแผนภาพแสดงโครงสร้างโมเดลที่เลือกอย่างเป็นระบบ (เช่น ทิศทางจาก Conv → Pool → FC layers) โดยใช้เครื่องมือเช่น draw.io, Mermaid หรือ Canva
+(แผนภาพนี้จะถูกนำไปใช้เป็นภาพหลักในสไลด์หน้า Our Approach)
+4. Technical Stack & Evaluation Metrics (เครื่องมือและการประเมินผล)
+ระบุ Framework (PyTorch/TensorFlow) และ Environment (Google Colab / Local GPU)
+Evaluation Metrics ระบุตัวชี้วัดที่จะใช้ประเมินโมเดล "พร้อมเหตุผล" (เช่น Classification ใช้ Precision/Recall/F1-Score, Generation ใช้ FID/PSNR)
+(ข้อมูลส่วนนี้เตรียมนำไปใส่เป็น Keyword ในสไลด์หน้า Expected Outcome & Metrics)
+5. Overall Workflow & System Architecture (แผนภาพรวมระบบการทำงานในบทที่ 3)
+System Pipeline Diagram (บังคับ) สร้างแผนภาพ (Flowchart หรือ Pipeline) ที่อธิบายภาพรวมสิ่งที่เราจะดำเนินการทั้งหมดใน "บทที่ 3" ตั้งแต่ต้นน้ำยันปลายน้ำ เพื่อให้เห็นกระบวนการทำงานจริงครบทุกขั้นตอน ประกอบด้วย
+Input & Preprocessing การรับข้อมูลเข้ามา และการเตรียม/ทำความสะอาดข้อมูล (Data Cleaning/Augmentation)
+Processing/Modeling การนำข้อมูลเข้าสู่โมเดล (Training & Testing)
+Output & Evaluation ผลลัพธ์ที่ได้ออกมา และการวัดผล
+ใช้เครื่องมือเช่น draw.io, Mermaid, Canva หรือ Miro ในการจัดทำ
+(แผนภาพส่วนนี้จะทำหน้าที่เป็นหัวใจหลักของบทที่ 3 และเตรียมนำไปใช้เป็นภาพรวมระบบในสไลด์หน้า "Our Approach / System Architecture") ดังตัวอย่าง
+
+รูปแสดงตัวอย่างหัวข้อ 5. Overall Workflow & System Architecture
+ ข้อกำหนดการส่งงาน (Deliverables)
+รูปแบบไฟล์ ส่งเป็นไฟล์ .docx หรือ .pdf
+การตั้งชื่อไฟล์ MDT310_W7_GroupXX_TechSpec (เปลี่ยน XX เป็นหมายเลขกลุ่ม) จาก ลิงค์นี้ https://docs.google.com/spreadsheets/d/1W85LcmffGQPRfyDjAF73LJTYdrod2O6snsdhcb0hUqw/edit?gid=771289078#gid=771289078 
+กำหนดส่ง ภายในเวลาเรียนแต่ละคาบครั้งหน้า  (ส่งช้า = 0 คะแนน)
+

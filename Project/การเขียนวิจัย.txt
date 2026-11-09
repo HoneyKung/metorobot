@@ -1,0 +1,234 @@
+ระเบียบวิธีการวิเคราะห์ Research Gap
+นิยามช่องว่างงานวิจัย
+ความหมายของ Research Gap
+    พื้นที่หรือประเด็นที่ยังไม่มีการศึกษา หรือยังขาดข้อมูลที่เพียงพอในองค์ความรู้ปัจจุบัน
+    จุดที่งานวิจัยในอดีต (Previous Studies) ยังทำไม่สำเร็จ หรือมีข้อจำกัด (Limitations)
+    โอกาสในการสร้างนวัตกรรมหรือองค์ความรู้ใหม่ (Novelty)
+ความสำคัญในการออกแบบระบบ AI
+    ช่วยกำหนดทิศทางของโปรเจกต์ให้ไม่ซ้ำซ้อน
+    เพิ่มคุณค่าให้กับงานวิจัย (Contribution)
+    ใช้เป็นจุดขายในการตีพิมพ์หรือนำเสนอผลงาน
+ประเภทของช่องว่างงานวิจัย 
+1. ช่องว่างด้านระเบียบวิธี (Methodology Gap)
+
+ปัญหาจากวิธีการวิจัยเดิมที่อาจไม่ครอบคลุม หรือล้าสมัย
+
+•
+
+ข้อจำกัดของอัลกอริทึมเดิม (เช่น ความแม่นยำต่ำ, ใช้เวลาประมวลผลนาน)
+
+•
+
+•
+
+การปรับเปลี่ยนกระบวนการทดลองเพื่อผลลัพธ์ที่ดีขึ้น
+
+2. ช่องว่างด้านองค์ความรู้ (Knowledge Gap)
+
+สิ่งที่ยังไม่มีใครรู้ หรือทฤษฎีที่ยังไปไม่ถึง
+
+•
+
+ข้อมูลที่ขาดหายไปในการแก้ปัญหาเฉพาะด้าน
+
+•
+
+3. ช่องว่างด้านการประยุกต์ใช้ (Application Gap)
+
+การนำเทคโนโลยีที่มีอยู่แล้ว ไปใช้ในบริบทใหม่ที่ไม่เคยทำมาก่อน
+
+•
+
+ตัวอย่าง: การนำ "การรู้จำรูปแบบ (Pattern Recognition)" ที่ใช้ในอุตสาหกรรม มาปรับใช้กับ "การแพทย์ (Medical AI)"
+
+•
+
+การขยายผลจาก Lab Scale สู่ Real-world Environment
+
+•
+
+4. ช่องว่างด้านประชากร (Population Gap)
+
+งานวิจัยเดิมทำในกลุ่มตัวอย่างหนึ่ง แต่ยังขาดการศึกษาในกลุ่มอื่น
+
+•
+การใช้เทคโนโลยีช่วยระบุช่องว่าง
+
+เทคนิคการทำเหมืองข้อความ (Text Mining)
+
+การใช้ "การประมวลผลภาษาธรรมชาติ (NLP)" เพื่อวิเคราะห์บทคัดย่อจำนวนมาก
+
+การหาความสัมพันธ์ของคำสำคัญ (Keyword Co-occurrence) เพื่อดูเทรนด์
+
+การวิเคราะห์ Topic Modeling เพื่อหากลุ่มหัวข้อที่ยังมีการพูดถึงน้อย
+
+ประโยชน์
+
+ช่วยประหยัดเวลาในการอ่าน Paper จำนวนมหาศาล
+
+เห็นภาพรวมของงานวิจัยทั้งสนาม (Landscape Analysis)
+
+กระบวนการวิเคราะห์เพื่อเริ่มงานวิจัย
+
+ขั้นตอนสู่การกำหนดโจทย์ (Step-by-Step)
+
+Search: ค้นหา Paper Q1 ที่ตรงความสนใจ (Game/Medical/UX)
+
+1.
+
+Review: อ่านส่วน Abstract และ Methodology
+
+2
+
+Identify: เจาะจงหา Limitations และ Future Work ใน Paper นั้น
+
+3
+
+Define Gap: ระบุให้ชัดเจนว่าเป็น Gap ประเภทใด (Methodology/Application)
+
+4
+
+Propose: เสนอแนวทางแก้ปัญหาด้วย System Flowchart ของตนเอง
+
+5
+
+เป้าหมายสำคัญ
+
+เปลี่ยนจากการเป็น "ผู้เสพข้อมูล" เป็น "ผู้สร้างแนวทางแก้ปัญหา"
+
+•
+การอ่านและวิเคราะห์ Paper Q1
+
+โครงสร้างมาตรฐานของงานวิจัยคุณภาพสูง Standard Structure of High-Quality Research Papers
+
+โครงสร้าง IMRaD (IMRaD Structure)
+
+บทคัดย่อ (Abstract): 
+สรุปภาพรวม ปัญหา วิธีการ และผลลัพธ์
+
+บทนำ (Introduction): 
+ที่มาของปัญหา (Problem Statement) และวัตถุประสงค์การวิจัย
+
+ระเบียบวิธีวิจัย (Methodology): 
+ขั้นตอนการทดลอง สถาปัตยกรรมระบบ และชุดข้อมูล
+
+ผลการทดลอง (Results): 
+ผลลัพธ์เชิงตัวเลข กราฟ และตารางเปรียบเทียบ
+
+อภิปรายและสรุป (Discussion & Conclusion): 
+การตีความผลลัพธ์ และข้อเสนอแนะ
+
+เทคนิคการอ่านบทคัดย่อและบทนำ 
+Analyzing Abstract & Introduction
+
+การระบุประเด็นสำคัญ (Identifying Key Elements)
+
+ปัญหาวิจัย (Research Problem): ผู้เขียนกำลังพยายามแก้อะไร? (Why now?)
+
+วิธีการที่นำเสนอ (Proposed Method): ใช้เทคนิค Pattern Recognition หรือ AI ตัวไหน?
+
+ผลลัพธ์หลัก (Key Contribution): ประสิทธิภาพดีกว่าวิธีเดิมอย่างไร?
+
+ช่องว่างงานวิจัยเดิม (Research Gap): งานก่อนหน้านี้ขาดอะไร?
+
+เป้าหมายการอ่าน: เพื่อตัดสินใจว่า Paper นี้ตรงกับหัวข้อที่เราสนใจหรือไม่ก่อนลงลึกในรายละเอียด
+
+การเจาะลึกส่วนระเบียบวิธีวิจัย 
+Deep Dive into Methodology Section
+
+องค์ประกอบที่ต้องถอดรหัส (Decoding Components)
+
+ข้อมูลนำเข้า (Input Data): ใช้ Dataset อะไร? มีการเตรียมข้อมูล (Preprocessing) อย่างไร?
+
+สถาปัตยกรรมโมเดล (Model Architecture): ใช้ Algorithm ใด? (เช่น CNN, RNN, Transformer) มีการปรับแต่งพารามิเตอร์อย่างไร?
+
+กระบวนการฝึกฝน (Training Process): ฟังก์ชันสูญเสีย (Loss Function) และตัวปรับค่า (Optimizer)
+
+ความสำคัญ: เป็นส่วนที่นำไปสู่การสร้าง Flowchart และทำความเข้าใจการทำงานของระบบอย่างแท้จริง
+
+การตีความผลลัพธ์และข้อจำกัด 
+Interpreting Results & Limitations
+
+
+การวัดผลประสิทธิภาพ (Performance Metrics): ตรวจสอบค่าความถูกต้อง (Accuracy), Precision, Recall และ F1-Score
+
+การค้นหาช่องว่างงานวิจัย (Research Gaps): พิจารณาข้อจำกัด (Limitations) และงานในอนาคต (Future Work)
+
+กรณีศึกษา: การวิเคราะห์งานวิจัยด้าน Pattern Recognition Case Study: Analyzing Pattern Recognition Research
+
+Paper Problem
+
+Method
+
+Result
+
+Research Gap
+
+การวินิจฉัยโรคจากภาพ X-ray ล่าช้าและมีความผิดพลาดจากมนุษย์
+
+ใช้ Deep Learning (CNN) ร่วมกับเทคนิค Data Augmentation
+
+ความแม่นยำ 95% แต่ยังมีปัญหาเรื่องการอธิบายผล (Explainability)
+
+ต้องการระบบที่แพทย์สามารถเข้าใจเหตุผลของการตัดสินใจได้ (Explainable AI - XAI)
+
+การแปลง Methodology เป็น Flowchart
+
+หลักการถอดรหัส: จากภาษาเขียนสู่ผังงาน 
+Decoding Rules: Translating Text to Logic
+
+หลักการพื้นฐานในการเปลี่ยนคำอธิบาย (Methodology) ให้เป็นสัญลักษณ์ทางตรรกะ
+
+NOUNS (คำนาม)
+
+VERBS (คำกริยา)
+
+CONDITIONS (เงื่อนไข)
+
+Databases / Entities
+
+Processes
+
+Decision Diamonds
+
+ข้อมูล / สิ่งที่ถูกกระทำ
+
+การประมวลผล / อัลกอริทึม
+
+จุดตัดสินใจ (If/Else)
+
+กรณีศึกษา: ระบบ AI ทำนายการเลิกเล่นเกม 
+Example: Churn Prediction in AI-Driven Game Testing
+
+วิเคราะห์ข้อมูลนำเข้า (Input Analysis)
+
+ Input: Game Logs, Player Profiles
+
+สกัดกระบวนการ (Process Extraction)
+
+ Process: Feature Extraction → Regression Model
+
+ระบุผลลัพธ์ (Output Definition)
+
+ Output: Churn Prediction Score
+
+ผลลัพธ์: ผังงานที่สมบูรณ์ 
+Result: Complete System Flowchart
+
+Game Logs
+ & Profiles
+
+Regression
+ Model
+
+Churn
+ Prediction Score
+
+Feature
+ Extraction
+
+Input Data
+
+Process / Algorithm
+
+Output

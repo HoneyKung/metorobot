@@ -1,0 +1,20 @@
+โฟลเดอร์นี้ "ไม่บังคับ" — จอหน้าหุ่น (จอที่ 2) วาดด้วยโค้ดอยู่แล้ว
+โค้ดใน robot-sim.js port drawEyes_* จาก Robo/Robo.ino มาแบบ 1:1 (จอ 320x240 เท่าจอจริง)
+พร้อมกระพริบตา/เหลือบมอง/ถอนหายใจ/หัวใจเต้น จังหวะเท่าเฟิร์มแวร์
+
+ถ้าอยากใช้ภาพวาดมือแทน: วางไฟล์ชื่อตรงตามนี้ ผืน 320 x 240 px พื้นขาวทึบเต็มจอ
+มีไฟล์ไหน ระบบใช้ภาพนั้นแทนโค้ดเฉพาะเฟรมนั้น (ขาดไฟล์ไหนก็ใช้โค้ดวาดต่อได้)
+
+face_Normal.png
+face_LookLeft.png
+face_LookRight.png
+face_Happy.png
+face_Sad.png
+face_Angry.png
+face_Shocked.png
+face_Sleepy.png
+face_Confused.png
+face_Love.png
+face_Shy.png
+face_HalfClosed.png     <- จำเป็นถ้าอยากให้กระพริบตาเป็นภาพวาด
+face_Closed.png         <- จำเป็นถ้าอยากให้กระพริบตาเป็นภาพวาด

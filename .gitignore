@@ -1,0 +1,60 @@
+# ความลับ — ห้ามขึ้น repo เด็ดขาด
+keyAPI.env
+*.env
+!.env.example
+
+# ฐานข้อมูลและไฟล์สำรอง/ชั่วคราว
+instance/
+*.db
+*.sqlite
+*.sqlite3
+*.bak*
+*_bak_*/
+_backup_*/
+tmp/
+.tmp*/
+*.tmp
+*.tmp.*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# โฟลเดอร์ STL, เอกสารวิจัย/วิทยานิพนธ์, เอกสาร IRB และ Mockups
+stl*/
+editthesis
+editthesis/
+IRB/
+irb/
+*IRB*
+*irb*
+*จริยธรรม*
+mockups
+mockups/
+mockup*
+mockup*/
+meto-qa-webapp/
+
+# เครื่องมือ/ระบบปฏิบัติการ และไฟล์ลิงก์จำลอง Google Drive
+desktop.ini
+.DS_Store
+Thumbs.db
+*.gdoc
+*.gsheet
+*.gslides
+*.gform
+*.gdraw
+.idea/
+.vscode/
+.claude/
+
+# ส่วนตัว/ข้อมูลบัญชี ห้ามขึ้น GitHub (9 พ.ย.)
+บันทึกการคุย_METO.md
+บัญชีจำลอง_เช็กแดชบอร์ด.md
+OldAIChatWithMe/
+*.docx
+tools/meto_vision/models/*.onnx
+tools/meto_vision/models/*.pt

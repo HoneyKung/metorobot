@@ -1,0 +1,3 @@
+ultralytics
+numpy
+# opencv: use the existing one (cv2 5.0 has FaceDetectorYN/FaceRecognizerSF)

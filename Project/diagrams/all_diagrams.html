@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <title>แผนภาพบทที่ 3 — ทุกภาพ (แก้แล้ว)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+
+        .page {
+            page-break-after: always;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 50px;
+            border-bottom: 3px dashed #ccc;
+        }
+
+        .page:last-child {
+            border-bottom: none;
+        }
+
+        h2 {
+            margin-bottom: 25px;
+            font-size: 26px;
+            color: #222;
+            text-align: center;
+        }
+
+        .mermaid {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .mermaid svg {
+            max-width: 100% !important;
+            min-width: 700px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ภาพที่ 13 -->
+    <div class="page" id="fig13">
+        <h2>ภาพที่ 13 — Flowchart กระบวนการทำงานทั้งระบบ (System Pipeline)</h2>
+        <div class="mermaid">
+            flowchart TB
+            subgraph INPUT["Data Input"]
+            A1["กล้อง OV2640 RGB565 240x240"]
+            A2["เว็บ Blockly บล็อกคำสั่ง"]
+            end
+
+            subgraph PREPROCESS["Preprocessing"]
+            B1["MSR01 Face Detection - Bounding Box"]
+            B2["MNP01 Landmark Detection - 5 Keypoints"]
+            B3["EMA Smoothing alpha=0.5"]
+            B4["Baseline Calibration rate=0.003"]
+            end
+
+            subgraph MODEL["Model Processing"]
+            C1["Ratio Calculation ปาก จมูก มุม"]
+            C2["Hysteresis Filter 2 เฟรม 500ms"]
+            C3["Emotion FSM 8 อารมณ์"]
+            C4["Block to String w a w a"]
+            end
+
+            subgraph OUTPUT["Output"]
+            D1["จอ TFT 2.8 นิ้ว วาดดวงตาอารมณ์"]
+            D2["เซอร์โว x5 ท่าทางประกอบ"]
+            D3["มอเตอร์ DC x2 เคลื่อนที่"]
+            end
+
+            A1 --> B1 --> B2 --> B3 --> B4
+            B4 --> C1 --> C2 --> C3
+            C3 --> D1
+            C3 --> D2
+            A2 --> C4
+            C4 --> D2
+            C4 --> D3
+        </div>
+    </div>
+
+    <!-- ภาพที่ 14 -->
+    <div class="page" id="fig14">
+        <h2>ภาพที่ 14 — Preprocessing Pipeline</h2>
+        <div class="mermaid">
+            flowchart TB
+            A["ภาพดิบ 240x240 RGB565"] -->|MSR01| B["Bounding Box รอบใบหน้า"]
+            B -->|MNP01| C["5 Keypoints ตาL ตาR จมูก ปากL ปากR"]
+            C -->|EMA alpha=0.5| D["Smoothed Keypoints"]
+            D -->|Baseline rate=0.003| E["Ratio Calculation"]
+            E --> F["อารมณ์ H S A O Z C V N"]
+        </div>
+    </div>
+
+    <!-- ภาพที่ 16 -->
+    <div class="page" id="fig16">
+        <h2>ภาพที่ 16 — Block Diagram การเชื่อมต่อฮาร์ดแวร์</h2>
+        <div class="mermaid">
+            flowchart TB
+            CAM["ESP32-CAM OV2640 ESP-DL"] -->|Serial2 H S A O Z C V N| ESP32S3
+            WEB["เว็บเบราว์เซอร์ Blockly"] -->|Wi-Fi HTTP /run| ESP32S3
+
+            ESP32S3["ESP32-S3 บอร์ดหลัก Wi-Fi AP Mode"]
+
+            ESP32S3 -->|SPI| TFT["จอ TFT 2.8 นิ้ว ILI9341"]
+            ESP32S3 -->|PWM Pin 32 33 25 26 27| SERVO["Servo x5 Hand Arm Head"]
+            ESP32S3 -->|GPIO 13 12 14 21| L298N["L298N Motor Driver"]
+            ESP32S3 -->|GPIO 15 34| IR["IR Sensor x2 เดินตามเส้น"]
+            L298N --> MOTOR["DC Motor x2 + ล้อ"]
+        </div>
+    </div>
+
+    <!-- ภาพที่ 18 -->
+    <div class="page" id="fig18">
+        <h2>ภาพที่ 18 — Architecture เว็บ Blockly กับ ESP32</h2>
+        <div class="mermaid">
+            sequenceDiagram
+            actor U as ผู้เรียน
+            participant W as เว็บ Blockly
+            participant E as ESP32-S3
+
+            U->>W: ลากวางบล็อกคำสั่ง
+            U->>W: กดปุ่ม Run
+            W->>W: แปลงบล็อกเป็นสตริง
+            W->>E: HTTP GET /run?cmd=...
+            Note over E: Wi-Fi AP Mode
+            E->>E: แยกคำสั่งทีละตัว
+            E->>E: สั่งมอเตอร์/เซอร์โว/จอ
+            E-->>W: Response OK
+            W-->>U: แสดงสถานะ เสร็จ
+        </div>
+    </div>
+
+    <!-- ภาพที่ 19 -->
+    <div class="page" id="fig19">
+        <h2>ภาพที่ 19 — Architecture LLM API (AI ผู้ช่วยสอน)</h2>
+        <div class="mermaid">
+            sequenceDiagram
+            actor U as ผู้เรียน
+            participant W as เว็บ Blockly
+            participant C as Cloud Server
+            participant G as Gemini API
+
+            U->>W: พิมพ์คำถาม+ส่งโค้ด
+            W->>C: HTTPS POST question+code
+            Note over C: แนบ API Key<br />System Prompt<br />ห้ามเฉลย ใช้คำถามชี้แนะ
+            C->>G: HTTPS POST prompt+key
+            G->>G: ประมวลผลภาษา
+            G-->>C: JSON Response
+            C-->>W: ส่งคำตอบกลับ
+            W-->>U: แสดงคำตอบ AI
+            Note over C: ซ่อน API Key<br />Rate Limiting
+        </div>
+    </div>
+
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis',
+                nodeSpacing: 50,
+                rankSpacing: 60
+            },
+            sequence: {
+                useMaxWidth: false,
+                width: 200,
+                height: 50,
+                boxMargin: 20,
+                mirrorActors: false,
+                messageMargin: 50,
+                noteMargin: 20,
+                actorFontSize: 16,
+                messageFontSize: 16,
+                noteFontSize: 14
+            },
+            fontSize: 16
+        });
+    </script>
+</body>
+
+</html>

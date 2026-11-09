@@ -1,0 +1,41 @@
+รายชื่อไฟล์ที่ต้องวาด — ชุด TOP VIEW (22 ภาพ)
+ผืนภาพ: 640 x 640 px จัตุรัส, PNG โปร่งใส, หุ่นหันขึ้น (12 นาฬิกา)
+จุดกลางผืน (320,320) = จุดหมุนตัวหุ่น = จุดคอ
+ฐาน+ตีนตะขาบกว้าง ~300 px / กางแขนสุดไม่เกิน 520 px
+สเปคเต็ม: ../README.md
+
+--- Base (1) ---
+Base/top_Base.png
+
+--- Head (3) ---
+Head/top_Head_Left.png
+Head/top_Head_Center.png
+Head/top_Head_Right.png
+
+--- ArmLeft (9) ---
+ArmLeft/top_ArmLeft_Close_Down.png
+ArmLeft/top_ArmLeft_Close_Center.png
+ArmLeft/top_ArmLeft_Close_Up.png
+ArmLeft/top_ArmLeft_Normal_Down.png
+ArmLeft/top_ArmLeft_Normal_Center.png
+ArmLeft/top_ArmLeft_Normal_Up.png
+ArmLeft/top_ArmLeft_Open_Down.png
+ArmLeft/top_ArmLeft_Open_Center.png
+ArmLeft/top_ArmLeft_Open_Up.png
+
+--- ArmRight (9) ---
+ArmRight/top_ArmRight_Close_Down.png
+ArmRight/top_ArmRight_Close_Center.png
+ArmRight/top_ArmRight_Close_Up.png
+ArmRight/top_ArmRight_Normal_Down.png
+ArmRight/top_ArmRight_Normal_Center.png
+ArmRight/top_ArmRight_Normal_Up.png
+ArmRight/top_ArmRight_Open_Down.png
+ArmRight/top_ArmRight_Open_Center.png
+ArmRight/top_ArmRight_Open_Up.png
+
+--- วาดก่อน 4 ภาพนี้ ก็เห็นหุ่นบนเวทีแล้ว ---
+Base/top_Base.png
+Head/top_Head_Center.png
+ArmLeft/top_ArmLeft_Normal_Center.png
+ArmRight/top_ArmRight_Normal_Center.png

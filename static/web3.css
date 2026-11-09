@@ -1,0 +1,286 @@
+/* ==================== เว็บรอบ 3 (9 พ.ย. 2569) ====================
+   หน้าบ้าน · สร้างห้อง · ห้องแบบทุกคนเท่ากัน · ฉายรหัสขึ้นจอ (dashboard-w3.js)
+   ถอดจาก mockups/แดชบอร์ด_ตัวอย่าง_รอบ3.html · ทุกกฎอยู่ใต้ body.mode-w3 หรือคลาส w3-* เท่านั้น
+   พื้นสว่าง ขอบบาง เงานุ่ม · ปุ่ม 3 ระดับ: หลัก (ทึบ) · รอง (ขอบ) · ลิงก์ (ตัวหนังสือ) */
+
+body.mode-w3 {
+    --w3-blue: #3A53A4; --w3-lime: #BED73B; --w3-ink: #24282f; --w3-ink2: #5b6270;
+    --w3-line: #e6e8ee; --w3-bg: #f5f6f9;
+}
+body.mode-w3 #page-dashboard { background: var(--w3-bg); }
+/* style.css มีกฎ global `button { position:absolute; top:20px; right:20px; z-index:100 }` ของปุ่มลอยหน้าเขียนโค้ด
+   ปุ่มทุกปุ่มในหน้ารอบ 3 ต้องกลับมาอยู่ในเนื้อหน้า (ดูหมายเหตุใน style.css ใกล้ .hub-back) */
+.w3-wrap button, .w3-proj button, .w3-form-card button {
+    position: static; top: auto; right: auto; z-index: auto; font-family: inherit;
+}
+.w3-typecard, .w3-b3, .w3-proj-close { box-shadow: none; }
+.w3-b3 { border-radius: 0; align-self: center; }
+.w3-wrap input { font-family: inherit; }
+body.mode-w3 .dashboard-container { max-width: none; padding: 0; background: transparent; }
+
+.w3-wrap { max-width: 1240px; margin: 0 auto; padding: 28px 28px 70px; color: var(--w3-ink); font-family: var(--font-ui, 'Prompt'), sans-serif; }
+.w3-h1 { font-size: 30px; margin: 0 0 4px; font-weight: 700; color: var(--w3-ink); }
+.w3-sub { color: var(--w3-ink2); font-size: 15px; }
+.w3-small { font-size: 13px; }
+.w3-sec { font-size: 20px; font-weight: 700; margin: 34px 0 14px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.w3-sec .w3-sub { font-weight: 400; }
+.w3-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.w3-empty { color: var(--w3-ink2); background: #fff; border: 1px dashed #c5cad6; border-radius: 12px; padding: 16px; }
+
+/* ---- ปุ่ม 3 ระดับ ---- */
+.w3-b1 { border: none; border-radius: 12px; padding: 11px 24px; font: inherit; font-size: 16px; font-weight: 700; color: #fff;
+         background: #2f9e44; box-shadow: 0 4px 0 rgba(0,0,0,.2); cursor: pointer; align-self: flex-start; }
+.w3-b1:hover { filter: brightness(1.05); }
+.w3-b1:disabled { opacity: .45; cursor: not-allowed; filter: none; }
+.w3-b2 { border: 2px solid currentColor; border-radius: 10px; padding: 7px 16px; font: inherit; font-size: 14px; font-weight: 600;
+         background: #fff; color: var(--w3-blue); cursor: pointer; align-self: flex-start; }
+.w3-b2:hover { background: #f5f7fd; }
+.w3-b3 { border: none; background: none; padding: 4px 2px; font: inherit; font-size: 14px; color: var(--w3-ink2);
+         text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.w3-block { width: 100%; align-self: stretch; }
+
+/* ---- หน้าบ้าน ---- */
+.w3-starts { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 18px; }
+.w3-start { background: #fff; border: 1px solid var(--w3-line); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+.w3-start.main { background: linear-gradient(180deg, #eaf6ff, #fff); border: 2px solid #4C97FF; }
+.w3-start-h { display: flex; align-items: center; gap: 10px; font-size: 18px; }
+.w3-start.main .w3-start-h { font-size: 19px; }
+.w3-join { display: flex; gap: 8px; flex-wrap: wrap; }
+.w3-join input { flex: 1; min-width: 120px; border: 1px solid #d5d9e2; border-radius: 10px; padding: 8px 12px; font: inherit; font-size: 15px; text-transform: uppercase; }
+.w3-rooms { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 20px; }
+.w3-room { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 10px rgba(20,30,60,.08); display: flex; flex-direction: column; border: 1px solid var(--w3-line); }
+.w3-room-top { padding: 18px 56px 16px 20px; color: #fff; position: relative; min-height: 96px; }
+.w3-rn { font-size: 21px; font-weight: 700; line-height: 1.25; word-break: break-word; }
+.w3-role { display: inline-block; margin-top: 8px; font-size: 14px; font-weight: 700; background: #fff; color: var(--w3-ink); border-radius: 20px; padding: 3px 12px; }
+.w3-ico { position: absolute; right: 16px; top: 16px; opacity: .95; }
+.w3-room-body { padding: 16px 20px 18px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+.w3-what { font-size: 15px; }
+.w3-what b { font-size: 17px; }
+.w3-room-body .w3-row { margin-top: auto; }
+.w3-archived { margin-top: 14px; color: var(--w3-ink2); }
+.w3-archived summary { cursor: pointer; }
+.w3-works { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+.w3-work { background: #fff; border: 1px solid var(--w3-line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+.w3-medals { display: flex; gap: 12px; flex-wrap: wrap; }
+.w3-medal-l { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; width: 84px; text-align: center; color: var(--w3-ink2); }
+.w3-medal { width: 58px; height: 58px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #fff; border: 3px solid #FFBF00; }
+.w3-medal svg { width: 30px; height: 30px; }
+.w3-medal.off { border-color: #e3e5ea; filter: grayscale(1); opacity: .45; }
+
+/* ---- ฟอร์ม (สร้างห้อง) ---- */
+.w3-form-card { max-width: 760px; margin: 0 auto; background: #fff; border: 1px solid var(--w3-line); border-radius: 18px; padding: 28px 30px;
+                box-shadow: 0 4px 16px rgba(20,30,60,.08); display: flex; flex-direction: column; gap: 12px; }
+.w3-field { display: flex; flex-direction: column; gap: 6px; }
+.w3-field input { border: 1px solid #d5d9e2; border-radius: 10px; padding: 10px 12px; font: inherit; font-size: 15px; }
+.w3-label { font-weight: 700; margin-top: 4px; }
+.w3-typecards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.w3-typecard { border: 2px solid var(--w3-line); border-radius: 16px; padding: 18px; background: #fff; text-align: left; font: inherit; color: var(--w3-ink); cursor: pointer; }
+.w3-typecard:hover { border-color: #b9c3e3; }
+.w3-typecard.on { border-color: var(--w3-blue); background: #f5f7fd; box-shadow: 0 0 0 3px rgba(58,83,164,.15); }
+.w3-typecard b { font-size: 18px; display: block; margin-top: 6px; }
+.w3-typecard ul { margin: 8px 0 0; padding-left: 20px; font-size: 14px; line-height: 1.8; color: var(--w3-ink2); }
+
+/* ---- ห้องแบบทุกคนเท่ากัน ---- */
+.w3-roomhead { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 18px; flex-wrap: wrap; }
+.w3-mapcard { border-radius: 18px; overflow: hidden; box-shadow: 0 4px 16px rgba(20,30,60,.12); background: #bfe4f7; }
+.w3-mapcard > svg { display: block; width: 100%; height: auto; }
+.w3-keyrow { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 14px; font-size: 15px; color: var(--w3-ink2); background: #fff;
+             border: 1px solid var(--w3-line); border-radius: 12px; padding: 12px 16px; }
+.w3-keyrow b { color: var(--w3-ink); }
+.w3-card { background: #fff; border: 1px solid var(--w3-line); border-radius: 14px; padding: 22px 24px; }
+.w3-card-t { font-weight: 700; font-size: 18px; margin-bottom: 14px; }
+.w3-peer { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.w3-dot { width: 34px; height: 34px; border-radius: 50%; color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 13px; flex: 0 0 auto; }
+.w3-peer-n { width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w3-bar { flex: 1; height: 12px; background: #eef0f4; border-radius: 6px; overflow: hidden; }
+.w3-bar i { display: block; height: 100%; background: #FFBF00; }
+.w3-peer-s { min-width: 48px; text-align: right; }
+
+/* ---- ฉายรหัสขึ้นจอ ---- */
+.w3-proj { position: fixed; inset: 0; z-index: 900; background: #1f2a52; color: #fff; display: flex; align-items: center; justify-content: center;
+           gap: 60px; flex-wrap: wrap; padding: 30px; font-family: var(--font-ui, 'Prompt'), sans-serif; text-align: center; }
+.w3-proj-close { position: absolute; top: 18px; right: 22px; background: rgba(255,255,255,.15); color: #fff; border: none; border-radius: 10px;
+                 padding: 8px 16px; font: inherit; cursor: pointer; }
+.w3-proj-t { font-size: 28px; margin-bottom: 10px; }
+.w3-proj-url { font-size: 24px; color: #BED73B; margin-bottom: 6px; }
+.w3-proj-how { font-size: 18px; opacity: .85; margin-bottom: 20px; }
+.w3-proj-code { font-size: 120px; font-weight: 800; letter-spacing: 14px; color: #BED73B; line-height: 1; }
+.w3-proj-count { font-size: 22px; margin-top: 20px; }
+.w3-proj-qr { background: #fff; color: var(--w3-ink); border-radius: 18px; padding: 18px; }
+
+/* ---- ฟอร์มสมัคร (โมดัลเดิม) ---- */
+.form-hint { font-weight: 400; color: #6b7280; }
+.form-note { font-size: 12px; color: #6b7280; margin: 0 0 6px; }
+
+@media (max-width: 900px) {
+    .w3-starts, .w3-typecards { grid-template-columns: 1fr; }
+    .w3-wrap { padding: 20px 16px 60px; }
+    .w3-proj-code { font-size: 72px; letter-spacing: 8px; }
+}
+.w3-proj .w3-proj-close { position: absolute; top: 18px; right: 22px; }
+
+/* ---- หน้าแรก (ยังไม่ล็อกอิน) ---- */
+body.mode-w3 #page-welcome { background: var(--w3-bg); min-height: calc(100vh - 60px); overflow: auto; }
+#page-welcome button { position: static; top: auto; right: auto; z-index: auto; font-family: inherit; }
+.w3-hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: 40px; align-items: center; padding: 30px 0 10px; }
+.w3-hero-h { font-size: 40px; line-height: 1.2; margin: 0 0 14px; color: var(--w3-ink); }
+.w3-hero-p { font-size: 18px; color: var(--w3-ink2); margin: 0 0 22px; }
+.w3-ticks { display: flex; flex-direction: column; gap: 8px; margin: 0 0 24px; font-size: 16px; }
+.w3-ticks span { display: flex; align-items: center; gap: 10px; }
+.w3-hero-btns { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.w3-b1-big { font-size: 20px; padding: 14px 34px; }
+.w3-who { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 36px; }
+.w3-card3 { background: #fff; border: 1px solid var(--w3-line); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+.w3-card3 h3 { margin: 0; font-size: 18px; }
+.w3-foot { margin-top: 30px; color: var(--w3-ink2); font-size: 13px; border-top: 1px solid var(--w3-line); padding-top: 14px; }
+@media (max-width: 900px) {
+    .w3-hero, .w3-who { grid-template-columns: 1fr; }
+    .w3-hero-h { font-size: 30px; }
+}
+.w3-proj-qr svg { width: 280px; height: 280px; display: block; }
+
+/* ---- ห้องแบบให้คะแนน ฝั่งสมาชิก: แผนที่ + กระดานไม้ก๊อก ---- */
+.w3-mystars { background: #fff; border-radius: 14px; padding: 10px 16px; border: 1px solid var(--w3-line); font-weight: 600; }
+.w3-mapwrap { position: relative; }
+.w3-node { cursor: pointer; }
+.w3-node:hover circle, .w3-node:focus circle { stroke-width: 6; }
+.w3-levelpop { position: absolute; right: 24px; top: 18px; width: 340px; background: #fff; border-radius: 16px;
+               box-shadow: 0 10px 26px rgba(20,30,60,.2); padding: 18px 20px; border: 2px solid var(--w3-blue); }
+.w3-levelpop button.w3-pop-x { position: absolute; top: 8px; right: 10px; background: none; border: none; font-size: 22px;
+                               color: var(--w3-ink2); cursor: pointer; padding: 2px 8px; box-shadow: none; z-index: auto; }
+.w3-levelpop .w3-b1 { position: static; }
+.w3-pop-t { font-size: 20px; font-weight: 700; margin: 2px 0 4px; }
+.w3-crit { display: flex; flex-direction: column; gap: 6px; margin: 10px 0 14px; font-size: 14px; line-height: 1.5; }
+.w3-board { position: relative; margin-top: 26px; border-radius: 18px; padding: 70px 26px 34px;
+            background:
+              radial-gradient(circle at 20% 30%, rgba(0,0,0,.05) 0 2px, transparent 3px) 0 0/22px 22px,
+              radial-gradient(circle at 70% 60%, rgba(255,255,255,.12) 0 2px, transparent 3px) 0 0/31px 31px,
+              #c99a5b;
+            border: 14px solid #8b5a2b; box-shadow: inset 0 0 30px rgba(0,0,0,.25), 0 6px 18px rgba(20,30,60,.18); }
+.w3-board-title { position: absolute; left: 26px; top: 16px; background: #fffdf5; padding: 6px 16px; font-weight: 700; font-size: 18px;
+                  transform: rotate(-2deg); box-shadow: 0 3px 6px rgba(0,0,0,.2); display: flex; align-items: center; gap: 8px; }
+.w3-board-empty { background: #fffdf5; border-radius: 6px; padding: 14px 18px; display: inline-block; }
+.w3-notes { display: flex; flex-wrap: wrap; gap: 34px 28px; align-items: flex-start; }
+.w3-note { position: relative; width: 270px; padding: 26px 20px 18px; box-shadow: 0 8px 14px rgba(0,0,0,.25);
+           display: flex; flex-direction: column; gap: 8px; color: #2d2a22; }
+.w3-note::before { content: ''; position: absolute; top: -9px; left: 50%; width: 20px; height: 20px; margin-left: -10px; border-radius: 50%;
+                   background: radial-gradient(circle at 35% 35%, #ff8a80, #c62828); box-shadow: 0 3px 4px rgba(0,0,0,.35); }
+.w3-note.next { width: 300px; outline: 4px solid #fff; padding-top: 44px; }
+.w3-nt { font-size: 21px; font-weight: 700; line-height: 1.25; }
+.w3-nd { font-size: 14px; color: #5d564a; }
+.w3-skilltag { align-self: flex-start; background: rgba(255,255,255,.7); border-radius: 6px; padding: 2px 8px; font-size: 13px; font-weight: 600; }
+.w3-fb { font-size: 14px; background: rgba(255,255,255,.55); padding: 6px 8px; border-radius: 6px; }
+.w3-stamp { align-self: flex-end; transform: rotate(-12deg); border: 3px solid; border-radius: 8px; padding: 2px 10px; font-weight: 800; font-size: 15px; opacity: .85; }
+.w3-stamp.ok { color: #2e7d32; }
+.w3-stamp.wait { color: #9a6a00; background: #fff3c4; }
+.w3-ribbon { position: absolute; left: -10px; top: 10px; background: #e53935; color: #fff; font-size: 13px; font-weight: 700; padding: 3px 12px;
+             transform: rotate(-6deg); box-shadow: 0 2px 4px rgba(0,0,0,.25); }
+.w3-note .w3-b3 { align-self: flex-start; color: #5d564a; }
+@media (max-width: 900px) {
+    .w3-levelpop { position: static; width: auto; margin: 10px; }
+    .w3-note, .w3-note.next { width: 100%; }
+}
+.w3-mapwrap { overflow: visible; }
+.w3-mapwrap > svg { border-radius: 18px; }
+.w3-node:focus { outline: none; }
+
+/* ---- โจทย์ท้า (ห้องแบบทุกคนเท่ากัน) ---- */
+.w3-chal-row { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-top: 1px solid var(--w3-line); }
+.w3-chal-row:first-child { border-top: none; padding-top: 0; }
+.w3-chal-ico { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+.w3-chal-tx { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.w3-chal-done { color: #2e7d32; font-weight: 600; }
+.w3-chal-form { display: flex; flex-direction: column; gap: 12px; }
+.w3-chal-form button { position: static; font-family: inherit; }
+.w3-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.w3-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #d5d9e2; border-radius: 20px; padding: 4px 12px; font-size: 14px; cursor: pointer; background: #fff; }
+.w3-chip:has(input:checked) { border-color: var(--w3-blue, #3A53A4); background: #eef2fb; }
+.w3-err { color: #c62828; font-size: 14px; }
+
+/* ---- รอบปรับหลังผู้ทดสอบเว็บจริง ---- */
+.w3-medal-how { font-size: 11px; color: var(--w3-ink2); line-height: 1.3; }
+.w3-medal-l { width: 96px; }
+/* กล่องวิธีได้ดาวอยู่ใต้แผนที่ ไม่บังด่านอื่น */
+.w3-levelpop { position: static; width: auto; margin: 12px 0 0; }
+.w3-mapwrap { background: transparent; box-shadow: none; }
+.w3-mapwrap > svg { box-shadow: 0 4px 16px rgba(20,30,60,.12); }
+.w3-check { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+
+/* ---- หน้าต่างลอย (สมัคร / เข้าสู่ระบบ / ตั้งโจทย์) ให้เข้าธีมรอบ 3 ----
+   เดิมใช้พื้น --c-surface (ครีม) + กรอบน้ำเงินหนา ไม่เหมือนหน้าใหม่ */
+#auth-modal .modal-content, body.mode-w3 .modal-content {
+    background: #fff; border: 1px solid #e6e8ee; border-radius: 18px; padding: 28px 30px;
+    box-shadow: 0 10px 30px rgba(20,30,60,.18); max-width: 440px; outline: none;
+}
+body.mode-w3 .modal-content { max-width: 620px; }
+#auth-modal .modal-title, body.mode-w3 .modal-title { font-size: 24px; font-weight: 700; color: #24282f; text-align: left; margin-bottom: 16px; }
+#auth-modal .auth-form { gap: 12px; }
+#auth-modal .form-group label { font-size: 14px; font-weight: 600; color: #24282f; }
+#auth-modal .form-group input { border: 1px solid #d5d9e2; border-radius: 10px; padding: 10px 12px; }
+#auth-modal .form-group input:focus { border-color: #3A53A4; box-shadow: 0 0 0 3px rgba(58,83,164,.12); }
+#auth-modal .btn-primary.btn-block {
+    background: #2f9e44; color: #fff; border: none; border-radius: 12px; padding: 12px; font-size: 17px; font-weight: 700;
+    box-shadow: 0 4px 0 #237a34; margin-top: 4px;
+}
+#auth-modal .btn-primary.btn-block:hover { filter: brightness(1.05); }
+#auth-modal .modal-footer { text-align: left; color: #5b6270; }
+#auth-modal .modal-footer .link { color: #3A53A4; font-weight: 600; }
+
+/* ==================== สัดส่วนเดียวกับหน้าแดชบอร์ดเดิม (9 พ.ย. 2569) ====================
+   เจ้าของ: "ขนาดสัดส่วนยูไอ ต่างจากหน้าแดชบอดมาก"
+   วัดแล้วหน้ารอบ 3 กว้าง 1240 หัว 30/20px ปุ่ม 16px · หน้าแดชบอร์ด (owner.css) กว้าง 1100 หัว 26/18px ปุ่ม 14px
+   ใช้ตัวเลขชุดเดียวกับ .ow-page / .ow-card / .ow-btn ทั้งหมด */
+body.mode-w3 .dashboard-container { padding: 32px 24px 48px; max-width: 1200px; margin: 0 auto; }
+.w3-wrap { max-width: 1100px; padding: 20px 20px 48px; }
+.w3-h1 { font-size: 26px; }
+.w3-sub { font-size: 14px; }
+.w3-small { font-size: 13px; }
+.w3-sec { font-size: 18px; font-weight: 600; margin: 26px 0 12px; }
+.w3-card-t { font-size: 18px; font-weight: 600; }
+
+.w3-start, .w3-card, .w3-room, .w3-work, .w3-card3, .w3-keyrow, .w3-mystars {
+    border: 1px solid #e8ecf4; border-radius: 12px; box-shadow: 0 2px 8px rgba(58,83,164,.07);
+}
+.w3-start { padding: 18px 20px; gap: 8px; }
+.w3-start.main { border-width: 2px; }
+.w3-start-h, .w3-start.main .w3-start-h { font-size: 16px; }
+.w3-card { padding: 20px 22px; }
+.w3-starts { gap: 16px; }
+.w3-rooms { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+.w3-room-top { padding: 14px 52px 14px 18px; min-height: 84px; }
+.w3-rn { font-size: 18px; }
+.w3-role { font-size: 13px; padding: 2px 10px; margin-top: 6px; }
+.w3-room-body { padding: 14px 18px 16px; gap: 10px; }
+.w3-what { font-size: 14px; }
+.w3-what b { font-size: 15px; }
+.w3-keyrow { font-size: 14px; padding: 10px 14px; }
+.w3-form-card { max-width: 680px; border-radius: 12px; padding: 22px 24px; }
+.w3-typecard { border-radius: 12px; padding: 16px; }
+.w3-typecard b { font-size: 16px; }
+.w3-mapcard, .w3-mapwrap > svg { border-radius: 12px; }
+
+/* ปุ่ม: ขนาดเดียวกับ .ow-btn (pill 14px) · ปุ่มหลักยังเขียวทึบ ปุ่มรองยังเป็นขอบ — แยกความสำคัญได้เหมือนเดิม */
+.w3-b1, .w3-b2 { border-radius: 20px; padding: 8px 18px; font-size: 14px; line-height: 1.2; }
+.w3-b1 { font-weight: 600; box-shadow: 0 3px 0 rgba(0,0,0,.18); }
+.w3-b2 { border-width: 1px; font-weight: 500; }
+.w3-b1-big { font-size: 17px; padding: 12px 28px; }
+.w3-b3 { font-size: 13px; }
+
+/* หน้าแรก */
+.w3-hero { gap: 32px; padding: 16px 0 6px; }
+.w3-hero-h { font-size: 34px; }
+.w3-hero-p { font-size: 16px; }
+.w3-ticks { font-size: 15px; }
+.w3-card3 h3 { font-size: 16px; }
+
+/* กระดานโน้ต */
+.w3-board { border-width: 12px; padding: 62px 22px 28px; border-radius: 14px; }
+.w3-board-title { font-size: 16px; }
+.w3-note { width: 250px; padding: 24px 18px 16px; }
+.w3-note.next { width: 270px; padding-top: 40px; }
+.w3-nt { font-size: 18px; }
+.w3-nd { font-size: 13px; }
+
+/* จอฉายรหัส เป็นจอโปรเจกเตอร์ คงตัวใหญ่ไว้ */
+.w3-proj .w3-b1, .w3-proj .w3-b2 { font-size: inherit; }
+.w3-wrap { box-sizing: content-box; }   /* เท่า .ow-page: เนื้อหากว้าง 1100 + ขอบ 20 */
